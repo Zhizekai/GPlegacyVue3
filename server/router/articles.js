@@ -8,12 +8,12 @@ router.all('/', (req, res) => {
   res.send('文章管理API')
 })
 
-// 新建文章
+// 新建文章 已重构 未测试
 router.post('/create', async (req, res, next) => {
   let created_by = req.auth._id
   let body = req.body
   try {
-    body.created_by = created_by
+    body.created_by = created_by  // 这个改成author了
     let result = await ArtsModel.create(body)
     res.send(result)
   } catch (err) {
@@ -21,7 +21,7 @@ router.post('/create', async (req, res, next) => {
   }
 })
 
-// 发布文章
+// 发布文章 已重构 未测试
 router.post('/publish/:id', async (req, res, next) => {
   let { id } = req.params
   let created_by = req.auth._id
@@ -43,7 +43,7 @@ router.post('/publish/:id', async (req, res, next) => {
   }
 })
 
-// 删除文章
+// 删除文章 已重构
 router.delete('/remove/:id', async (req, res, next) => {
   let { id } = req.params
   try {
@@ -58,17 +58,20 @@ router.delete('/remove/:id', async (req, res, next) => {
   }
 })
 
-// 修改文章
+// 修改文章 已重构
 router.put('/update/:id', async (req, res, next) => {
   let body = req.body
   let { id } = req.params
   try {
+
+    // 防止修改除了allow_keys 以外的其他属性
     let allow_keys = ['title', 'intro', 'content', 'category', 'tags']
     Object.keys(body).forEach(key => {
       if (!allow_keys.includes(key)) {
         delete body[key]
       }
     })
+
     if (Object.keys(body).length == 0) {
       return res.status(400).send({
         message: '请传入要更新的数据',
@@ -86,7 +89,7 @@ router.put('/update/:id', async (req, res, next) => {
   }
 })
 
-// 文章列表
+// 文章列表 已重构
 router.get('/lists', async (req, res, next) => {
   let user_id = req.auth ? req.auth._id : null
   let { category, created_by, orderby, per_page, page } = req.query
@@ -188,7 +191,7 @@ router.get('/lists', async (req, res, next) => {
   }
 })
 
-// 文章详情
+// 文章详情 已重构
 router.get('/detail/:id', async (req, res, next) => {
   let { id } = req.params
   let user_id = req.auth ? req.auth._id : null

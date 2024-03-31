@@ -1,12 +1,8 @@
 <template>
   <div class="cus-header">
     <div class="site-tips fx-c" v-if="ustore.show_tips">
-      <span
-        >本项目是开源项目，仅用于交流学习，源码在
-        <a target="_blank" href="https://github.com/ruidoc/jueblog-combat"
-          >GitHub</a
-        >，欢迎查阅 👏</span
-      >
+<!--全局提示框-->
+      <span>本项目是前后台分离的系统，欢迎查阅 👏</span>
       <span class="close-btn fx-c" @click="ustore.setTips(false)">
         <el-icon><Close /></el-icon>
       </span>
@@ -15,7 +11,7 @@
       <div class="inner-row fx">
         <span class="fx-c title-wrap" @click="toHome">
           <img class="logo" src="/logo.png" />
-          <span class="title">仿稀土掘金</span>
+          <span class="title">民俗展示平台</span>
         </span>
         <Menus></Menus>
       </div>

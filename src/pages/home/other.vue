@@ -16,17 +16,17 @@ onMounted(() => {})
       <el-button @click="toGithub">去Star</el-button>
     </div>
     <div class="box-wrap">
-      <h4>进源码实战群</h4>
-      <p>扫码加作者微信，进群学习讨论</p>
+      <h4>民俗平台</h4>
+      <p>扫码加微信，进群学习讨论民俗</p>
       <img src="/wechat.jpeg" style="width: 80%" />
     </div>
-    <div class="book-dv box-wrap">
-      <h4>5折购买纸质书</h4>
-      <p>本项目基础+实战详细介绍全在下方书中，点击去购买</p>
-      <a class="link" target="_blank" href="https://item.jd.com/14337084.html">
-        <img src="/book.png" />
-      </a>
-    </div>
+<!--    <div class="book-dv box-wrap">-->
+<!--      <h4>5折购买纸质书</h4>-->
+<!--      <p>本项目基础+实战详细介绍全在下方书中，点击去购买</p>-->
+<!--      <a class="link" target="_blank" href="https://item.jd.com/14337084.html">-->
+<!--        <img src="/book.png" />-->
+<!--      </a>-->
+<!--    </div>-->
   </div>
 </template>
 

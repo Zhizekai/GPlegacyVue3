@@ -30,11 +30,11 @@ const toDelete = (id: string) => {
       v-for="item in props.articles"
       @click="toDetail(item)"
     >
-      <div class="art-meta fx">
-        {{ item.user.username }} <i /> {{ getTimer(item.created_at) }}<i />{{
-          store.getCateLabel(item.category)
-        }}
-      </div>
+<!--      <div class="art-meta fx">-->
+<!--        {{ item.user.username }} <i /> {{ getTimer(item.created_at) }}<i />{{-->
+<!--          store.getCateLabel(item.category)-->
+<!--        }}-->
+<!--      </div>-->
       <div class="artctx-wrapper">
         <div class="info-wrap">
           <h3>{{ item.title }}</h3>

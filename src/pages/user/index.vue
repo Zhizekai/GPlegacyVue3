@@ -7,7 +7,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 const { user_info, getUser, toggleFollow, checkFollow } = userStore()
 const { getArticles } = articleStore()
-const { getShortmsgs } = shortmsgStore()
+const { getShortMessages } = shortmsgStore()
 const route = useRoute()
 const curuser = ref<UserType | null>(null)
 const tab = ref('article')
@@ -38,7 +38,7 @@ const getData = () => {
     })
   }
   if (tab.value == 'shortmsg') {
-    getShortmsgs({ created_by: uid.value }, res => {
+    getShortMessages({ created_by: uid.value }, res => {
       short_msgs.value = res
     })
   }

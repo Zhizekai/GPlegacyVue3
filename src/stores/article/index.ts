@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import request from '@/request'
+import mockData from '../static.js'
 
 const artiStore = defineStore('article', {
   state: () => ({
@@ -26,9 +27,11 @@ const artiStore = defineStore('article', {
         if (page == 1) {
           this.loading = true
         }
-        let res: any = await request.get('/arts/lists', { params })
+        let res: any = await request.get('/api/arts/list', { params })
         if (res && !fun) {
-          this.articles = page == 1 ? res.data : this.articles.concat(res.data)
+          console.log(res)
+          // this.articles = page == 1 ? res.data : this.articles.concat(res.data)
+          this.articles = page == 1 ? res.rows : this.articles.concat(res.rows)
           this.meta = res.meta
         }
         this.loading = false
@@ -41,7 +44,7 @@ const artiStore = defineStore('article', {
     // 文章详情
     async getArtDetail(id: string, fun: (data: ArticleType) => void) {
       try {
-        let res: any = await request.get('/arts/detail/' + id)
+        let res: any = await request.get('/api/arts/detail/' + id)
         fun(res)
       } catch (error) {
         console.log(error)
@@ -50,8 +53,10 @@ const artiStore = defineStore('article', {
     // 文章分类
     async getCategory() {
       try {
-        let res: any = await request.get('/arts/category')
-        this.categories = res
+        // let res: any = await request.get('/arts/category')
+
+
+        this.categories = mockData.categories
       } catch (error) {
         console.log(error)
       }

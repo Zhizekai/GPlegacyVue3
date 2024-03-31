@@ -9,13 +9,17 @@ router.all('/', (req, res) => {
   res.send('用户管理API')
 })
 
-// 用户注册
+// 用户注册 已重构
 router.post('/create', async (req, res, next) => {
   let body = req.body
   try {
+
+    // 这他妈的明文传密码吗？？
     if (!body.password || body.password.length < 6) {
       return res.status(400).send({ message: '密码必传且长度不小于6位' })
     }
+
+
     body.password = encrypt(body.password)
     let result = await UsersModel.create(body)
     res.send(result)
@@ -24,7 +28,7 @@ router.post('/create', async (req, res, next) => {
   }
 })
 
-// 获取用户信息
+// 获取用户信息 已重构
 router.get('/info/:id', async (req, res, next) => {
   let { id } = req.params
   if (id == 'self') {
@@ -51,7 +55,7 @@ router.get('/info/:id', async (req, res, next) => {
   }
 })
 
-// 用户登录
+// 用户登录 已重构
 router.post('/login', async (req, res, next) => {
   let body = req.body
   try {
@@ -86,7 +90,7 @@ router.post('/login', async (req, res, next) => {
   }
 })
 
-// 修改用户信息
+// 修改用户信息 已重构
 router.put('/update/:id', async (req, res, next) => {
   let body = req.body
   let { id } = req.params

@@ -35,7 +35,7 @@ const onFilter = (json: Record<string, string>) => {
   router.push({
     query: filter.value,
   })
-  store.getShortmsgs(filter.value)
+  store.getShortMessages(filter.value)
 }
 const tagChange = (e: MouseEvent) => {
   let dom: any = e.target
@@ -60,7 +60,7 @@ const toCreate = async () => {
         ElMessage.success('发布成功！')
         form.value = { content: '', group: 'all', images: [] }
         fileList.value = []
-        store.getShortmsgs(filter.value)
+        store.getShortMessages(filter.value)
       }
     })
   } catch (error) {}
@@ -73,7 +73,7 @@ const onScrollEnd = () => {
   if (loading.value) return
   loading.value == true
   filter.value.page = page + 1
-  store.getShortmsgs(filter.value)
+  store.getShortMessages(filter.value)
 }
 
 // 删除图片
@@ -105,7 +105,7 @@ const uploadSuccess = (file: any) => {
 onMounted(() => {
   filter.value = route.query
   store.getGroups()
-  store.getShortmsgs(filter.value)
+  store.getShortMessages(filter.value)
   if (ustore.user_info) {
     messageStore().getMessage()
   }

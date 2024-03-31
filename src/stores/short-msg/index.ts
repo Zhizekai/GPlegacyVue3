@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import request from '@/request'
+import mockData from '../static.js'
 
 const stmsgStore = defineStore('short-msg', {
   state: () => ({
@@ -15,7 +16,7 @@ const stmsgStore = defineStore('short-msg', {
   }),
   actions: {
     // 沸点列表
-    async getShortmsgs(
+    async getShortMessages(
       params: Record<string, string> = {},
       fun?: (data: any) => void
     ) {
@@ -27,7 +28,7 @@ const stmsgStore = defineStore('short-msg', {
         if (page == 1) {
           this.loading = true
         }
-        let res: any = await request.get('/stmsgs/lists', { params })
+        let res: any = await request.get('/api/shortMsg/lists', { params })
         if (res && !fun) {
           this.shortmsgs =
             page == 1 ? res.data : this.shortmsgs.concat(res.data)
@@ -43,9 +44,11 @@ const stmsgStore = defineStore('short-msg', {
     // 沸点分组
     async getGroups() {
       try {
-        let res: GroupType[] = await request.get('/stmsgs/group')
-        this.groups = res
-        let circle = res.find(row => row.key == 'circles')
+        // let res: GroupType[] = await request.get('/api/shortMsg/group')
+
+
+        this.groups = mockData.groups
+        let circle = mockData.groups.find(row => row.key == 'circles')
         this.circles = circle?.children || []
       } catch (error) {
         console.log(error)
@@ -69,7 +72,7 @@ const stmsgStore = defineStore('short-msg', {
     // 创建沸点
     async createMsg(data: Partial<ShortMsgType>, fun: (data: any) => void) {
       try {
-        let res: any = await request.post('/stmsgs/create', data)
+        let res: any = await request.post('/api/shortMsg/create', data)
         fun(res)
       } catch (error) {
         fun(false)
@@ -79,7 +82,7 @@ const stmsgStore = defineStore('short-msg', {
     // 删除沸点
     async removeMsg(id: string, fun: () => void) {
       try {
-        await request.delete('/stmsgs/remove/' + id)
+        await request.delete('/api/shortMsg/remove/' + id)
         fun()
       } catch (error) {
         console.log(error)
