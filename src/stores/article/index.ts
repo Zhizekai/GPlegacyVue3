@@ -45,7 +45,7 @@ const artiStore = defineStore('article', {
     async getArtDetail(id: string, fun: (data: ArticleType) => void) {
       try {
         let res: any = await request.get('/api/arts/detail/' + id)
-        fun(res)
+        fun(res.data)
       } catch (error) {
         console.log(error)
       }
@@ -65,7 +65,7 @@ const artiStore = defineStore('article', {
     async togglePraise(data: any, fun: (bool: boolean) => void) {
       try {
         data.target_type = 1
-        let res: any = await request.post('/praises/toggle', data)
+        let res: any = await request.post('/api/praises/toggle', data)
         fun(res.action == 'create' ? true : false)
       } catch (error) {
         console.log(error)

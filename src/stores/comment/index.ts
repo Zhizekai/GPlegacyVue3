@@ -7,10 +7,10 @@ const commentStore = defineStore('comment', {
     action_load: 1,
   }),
   actions: {
-    // 评论列表
+    // 获取某个文章的评论列表
     async getComments(id: string, fun: (data: any) => void) {
       try {
-        let res: any = await request.get('/comments/list/' + id)
+        let res: any = await request.get('/api/comments/list/' + id)
         fun(res)
       } catch (error) {
         console.log(error)
@@ -19,7 +19,7 @@ const commentStore = defineStore('comment', {
     // 创建评论
     async createComment(data: Partial<CommentType>, fun: (data: any) => void) {
       try {
-        let res: any = await request.post('/comments/create', data)
+        let res: any = await request.post('/api/comments/create', data)
         fun(res)
       } catch (error) {
         console.log(error)
@@ -28,7 +28,7 @@ const commentStore = defineStore('comment', {
     // 删除评论
     async removeComment(id: string, fun: (bool: boolean) => void) {
       try {
-        await request.delete('/comments/remove/' + id)
+        await request.delete('/api/comments/remove/' + id)
         fun(true)
       } catch (error) {
         console.log(error)

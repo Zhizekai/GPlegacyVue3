@@ -2,35 +2,35 @@
   <section :class="['comment-component', { active: props.smallSize }]">
     <div
       v-for="comment in props.comments"
-      :key="comment._id"
+      :key="comment.id"
       class="par-comment fxt"
     >
-      <el-avatar :size="36" :src="comment.created_by?.avatar">
+      <el-avatar :size="36" :src="comment.legacyUser?.avatar">
         <img src="@/assets/avatar.png" />
       </el-avatar>
       <div class="ctx-wrap">
         <div class="uinfo fx">
-          <span class="u">{{ comment.created_by.username }}</span>
-          <span class="p">{{ comment.created_by.position }}</span>
+          <span class="u">{{ comment.legacyUser.username }}</span>
+          <span class="p">{{ comment.legacyUser.position }}</span>
         </div>
         <div class="content">{{ comment.content }}</div>
         <Replay
           :item="comment"
           :active="act_id"
-          @on-active="b => setActive(b, comment._id)"
+          @on-active="b => setActive(b, comment.id)"
           @on-reply="c => toReply(c, 'comment', comment)"
         />
         <div
           v-for="item in comment.replies"
-          :key="item._id"
+          :key="item.id"
           class="repliy-item fxt"
         >
-          <el-avatar :size="28" :src="item.created_by.avatar">
+          <el-avatar :size="28" :src="item.legacyUser.avatar">
             <img src="@/assets/avatar.png" />
           </el-avatar>
           <div class="ctx-wrap">
             <div class="uinfo fx">
-              <span class="u">{{ item.created_by.username }}</span>
+              <span class="u">{{ item.legacyUser.username }}</span>
               <span v-if="item.reply_id">
                 <span class="content">&nbsp;回复&nbsp;</span>
                 <span class="u">{{
@@ -42,8 +42,8 @@
             <Replay
               :item="item"
               :active="act_id"
-              @on-active="b => setActive(b, item._id)"
-              @on-reply="c => toReply(c, 'reply', item, comment._id)"
+              @on-active="b => setActive(b, item.id)"
+              @on-reply="c => toReply(c, 'reply', item, comment.id)"
             />
           </div>
         </div>
@@ -66,18 +66,18 @@ const emit = defineEmits<{
 const toReply = (
   content: string,
   type: string,
-  item: CommentRepliyType,
+  item: CommentReplyType,
   parent_id?: string
 ) => {
   console.log(content)
   let form: any = {
     type,
     content,
-    parent_id: parent_id || item._id,
-    target_user: item.created_by._id,
+    parent_id: parent_id || item.id,
+    target_user: item.legacyUser.id,
   }
   if (type == 'reply') {
-    form.reply_id = item._id
+    form.reply_id = item.id
   }
   emit('onReply', form)
   setTimeout(() => {
@@ -85,6 +85,7 @@ const toReply = (
   }, 600)
 }
 const setActive = (bool: boolean, id: string) => {
+  console.log(id)
   act_id.value = bool ? id : ''
 }
 const whoReoly = (rid: string, replies: any[]) => {

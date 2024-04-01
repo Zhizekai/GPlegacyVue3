@@ -7,7 +7,7 @@ router.all('/', (req, res) => {
   res.send('关注和粉丝API')
 })
 
-// 关注用户
+// 关注用户 已重构 未对接
 router.post('/toggle', async (req, res, next) => {
   let body = req.body
   let fans_id = req.auth._id
@@ -37,7 +37,7 @@ router.post('/toggle', async (req, res, next) => {
   }
 })
 
-// 获取关注列表
+// 获取关注列表 已重构 未对接
 router.get('/lists', async (req, res, next) => {
   let user_id = req.auth._id
   let { per_page, page } = req.query
@@ -129,7 +129,7 @@ router.get('/lists', async (req, res, next) => {
   }
 })
 
-// 统计关注与粉丝
+// 统计关注与粉丝 未对接
 router.get('/preview', async (req, res, next) => {
   let user_id = req.auth._id
   try {
@@ -144,7 +144,7 @@ router.get('/preview', async (req, res, next) => {
   }
 })
 
-// 是否关注某用户
+// 是否关注某用户 未对接
 router.post('/is-follow', async (req, res, next) => {
   let fans_id = req.auth._id
   let { user_id } = req.body

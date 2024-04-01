@@ -9,7 +9,7 @@ router.all('/', (req, res) => {
   res.send('用户管理API')
 })
 
-// 用户注册 已重构
+// 用户注册 已重构 未对接
 router.post('/create', async (req, res, next) => {
   let body = req.body
   try {
@@ -28,7 +28,7 @@ router.post('/create', async (req, res, next) => {
   }
 })
 
-// 获取用户信息 已重构
+// 获取用户信息 已重构 未对接
 router.get('/info/:id', async (req, res, next) => {
   let { id } = req.params
   if (id == 'self') {
@@ -55,7 +55,7 @@ router.get('/info/:id', async (req, res, next) => {
   }
 })
 
-// 用户登录 已重构
+// 用户登录 已重构 未对接
 router.post('/login', async (req, res, next) => {
   let body = req.body
   try {
@@ -90,7 +90,7 @@ router.post('/login', async (req, res, next) => {
   }
 })
 
-// 修改用户信息 已重构
+// 修改用户信息 已重构 未对接
 router.put('/update/:id', async (req, res, next) => {
   let body = req.body
   let { id } = req.params

@@ -8,7 +8,7 @@ router.all('/', (req, res) => {
   res.send('赞和收藏API')
 })
 
-// 添加/取消点赞或收藏 已重构
+// 添加/取消点赞或收藏 已重构 未对接
 router.post('/toggle', async (req, res, next) => {
   let created_by = req.auth._id
   let body = req.body
@@ -46,7 +46,7 @@ router.post('/toggle', async (req, res, next) => {
   }
 })
 
-// 获取我的赞和收藏列表 已重构
+// 获取我的赞和收藏列表 已重构 未对接
 router.get('/mylist', async (req, res, next) => {
   let user_id = req.auth._id
   let { per_page, page } = req.query

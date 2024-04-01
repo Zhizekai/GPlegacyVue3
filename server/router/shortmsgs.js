@@ -7,7 +7,7 @@ router.all('/', (req, res) => {
   res.send('沸点API')
 })
 
-// 创建沸点 已重构
+// 创建沸点 已重构 未对接
 router.post('/create', async (req, res, next) => {
   let body = req.body
   let user_id = req.auth._id
@@ -20,7 +20,7 @@ router.post('/create', async (req, res, next) => {
   }
 })
 
-// 沸点列表 已重构
+// 沸点列表 已重构 未对接
 router.get('/lists', async (req, res, next) => {
   let user_id = req.auth ? req.auth._id : null
   let { group, orderby, created_by, per_page, page } = req.query
@@ -107,7 +107,7 @@ router.get('/lists', async (req, res, next) => {
   }
 })
 
-// 删除沸点 已重构
+// 删除沸点 已重构 未对接
 router.delete('/remove/:id', async (req, res, next) => {
   let { id } = req.params
   try {

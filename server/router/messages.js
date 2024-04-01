@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router()
 var MessModel = require('../model/messages')
 
-// 创建消息 已重构
+// 创建消息 已重构 未对接
 router.post('/create', async (req, res, next) => {
   let body = req.body
   try {
@@ -13,7 +13,7 @@ router.post('/create', async (req, res, next) => {
   }
 })
 
-// 消息统计 已重构
+// 消息统计 已重构 未对接
 router.get('/preview', async (req, res, next) => {
   let user_id = req.auth._id
   try {

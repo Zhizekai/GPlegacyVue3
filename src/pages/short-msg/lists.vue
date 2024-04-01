@@ -62,13 +62,18 @@ const getComments = (msg_id: string) => {
     <div class="msgs-item" v-for="item in props.shortmsgs">
       <div class="pad-wrap">
         <div class="user-meta fx">
-          <el-avatar :size="48" :src="item.user.avatar">
+<!--          <el-avatar :size="48" :src="item.user.avatar">-->
+<!--            <img src="@/assets/avatar.png" />-->
+<!--          </el-avatar> -->
+          <el-avatar :size="48" >
             <img src="@/assets/avatar.png" />
           </el-avatar>
           <div class="desc-area">
-            <h3 @click="toUser(item.user._id)">{{ item.user.username }}</h3>
+<!--            <h3 @click="toUser(item.user._id)">{{item.user.username }}</h3>-->
+            <h3 @click="toUser(item.user._id)">{{ "用户名" }}</h3>
             <span class="desc fx">
-              {{ item.user.position || '程序员' }} <i />
+<!--              {{  item.user.position || '程序员' }} <i />-->
+              {{  '村民' }} <i />
               {{ getTimer(item.created_at) }}</span
             >
           </div>
@@ -91,18 +96,18 @@ const getComments = (msg_id: string) => {
         </div>
         <div class="content-box">
           <p>{{ item.content }}</p>
-          <div :class="['img-list', { one: item.images.length == 1 }]">
-            <el-image
-              fit="cover"
-              :preview-src-list="item.images"
-              v-for="(img, ind) in item.images"
-              :max-scale="2"
-              :min-scale="0.5"
-              :initial-index="ind"
-              :key="img"
-              :src="img"
-            />
-          </div>
+<!--          <div :class="['img-list', { one: item.images.length == 1 }]">-->
+<!--            <el-image-->
+<!--              fit="cover"-->
+<!--              :preview-src-list="item.images"-->
+<!--              v-for="(img, ind) in item.images"-->
+<!--              :max-scale="2"-->
+<!--              :min-scale="0.5"-->
+<!--              :initial-index="ind"-->
+<!--              :key="img"-->
+<!--              :src="img"-->
+<!--            />-->
+<!--          </div>-->
         </div>
       </div>
       <div class="artion-wrap fx">

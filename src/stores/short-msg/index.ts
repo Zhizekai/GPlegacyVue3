@@ -31,7 +31,8 @@ const stmsgStore = defineStore('short-msg', {
         let res: any = await request.get('/api/shortMsg/lists', { params })
         if (res && !fun) {
           this.shortmsgs =
-            page == 1 ? res.data : this.shortmsgs.concat(res.data)
+            // page == 1 ? res.data : this.shortmsgs.concat(res.data)
+            page == 1 ? res.rows : this.shortmsgs.concat(res.rows)
           this.meta = res.meta
         }
         this.loading = false

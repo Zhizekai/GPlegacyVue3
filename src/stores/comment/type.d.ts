@@ -1,5 +1,5 @@
 interface CommentType {
-  _id: string
+  id: string
   source_id: string // 文章或沸点ID
   source_type: 1 | 2 // 1: 文章，2: 沸点
   type: 'source' | 'comment' | 'reply' // source: 内容，comment: 评论，reply: 回复
@@ -11,18 +11,21 @@ interface CommentType {
   created_at: string // 创建时间
 }
 
+// 一级评论
 interface CommentResultType {
-  _id: string
+  id: string
   content: string // 评论内容
-  created_by: Partial<UserType>
-  replies: CommentRepliyType[]
+  legacyUser: Partial<UserType>
+  replies: CommentReplyType[]
   created_at: string
 }
 
-interface CommentRepliyType {
-  _id: string
+
+// 二级评论
+interface CommentReplyType {
+  id: string
   reply_id?: string
   content: string
-  created_by: Partial<UserType>
+  legacyUser: Partial<UserType>
   created_at: string
 }

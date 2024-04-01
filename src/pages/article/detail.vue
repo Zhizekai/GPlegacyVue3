@@ -15,10 +15,10 @@ const actd = ref('')
 const is_follow = ref(false)
 
 const toEdit = () => {
-  window.open('/operate/' + article.value._id)
+  window.open('/operate/' + article.value.id)
 }
 const toUser = () => {
-  window.open('/user/' + article.value.user._id)
+  window.open('/user/' + article.value.user.id)
 }
 const toFollow = () => {
   let user_id = article.value.created_by
@@ -27,9 +27,9 @@ const toFollow = () => {
   })
 }
 const toPraiseOrStart = (type: 1 | 2) => {
-  let { _id, created_by } = article.value
+  let { id, created_by } = article.value
   let form = {
-    target_id: _id,
+    target_id: id,
     target_user: created_by,
     type,
   }
@@ -69,6 +69,7 @@ const onScroll = (e: Event) => {
 onMounted(() => {
   let { id } = route.params
   store.getArtDetail(id as string, data => {
+
     article.value = data
     let dirs = data.content.match(/#{1,}.*/g) || []
     let index = 0
@@ -143,9 +144,9 @@ onMounted(() => {
         <div class="content" v-if="article">
           <h1 className="art-title">{{ article.title }}</h1>
           <div className="options fx">
-            <span className="uname hover" @click="toUser">{{
-              article.user.username
-            }}</span>
+<!--            <span className="uname hover" @click="toUser">{{-->
+<!--              article.user.username-->
+<!--            }}</span>-->
             <span className="time">
               {{ dayjs(article.created_at).format('YYYY-MM-DD HH:mm') }}
             </span>
@@ -153,20 +154,20 @@ onMounted(() => {
               <span class="iconfont icon-liulan"></span>
               &nbsp;{{ article.page_view }}
             </span>
-            <a
-              className="edit"
-              v-if="ustore.user_info?._id == article.user._id"
-              @click="toEdit"
-              >编辑</a
-            >
+<!--            <a-->
+<!--              className="edit"-->
+<!--              v-if="ustore.user_info?.id == article.user.id"-->
+<!--              @click="toEdit"-->
+<!--              >编辑</a-->
+<!--            >-->
           </div>
           <MkRender :content="article.content" />
         </div>
         <div class="content comment-wrap" v-if="article">
           <Comment
-            :art_id="article._id"
-            :user_id="article.user._id"
-            :count="article.comments"
+            :art_id="article?.id"
+            :user_id="article.user?.id"
+            :count="article?.comments"
           />
         </div>
       </div>
@@ -185,7 +186,7 @@ onMounted(() => {
           </div>
           <div
             class="btn-wrap fx-b"
-            v-if="article.created_by != ustore.user_info?._id"
+            v-if="article.created_by != ustore.user_info?.id"
           >
             <el-button type="primary" @click="toFollow" plain>{{
               is_follow ? '已关注' : '关注'
@@ -196,27 +197,27 @@ onMounted(() => {
               <span class="icarea">
                 <span class="iconfont icon-zan2 izan" />
               </span>
-              <span>获得点赞 &nbsp;{{ article.user.good_num }}</span>
+              <span>获得点赞 &nbsp;{{ article.user.goodNum }}</span>
             </div>
             <div class="row fx">
               <span class="icarea">
                 <span class="iconfont icon-view2" />
               </span>
-              <span>文章被阅读 &nbsp;{{ article.user.read_num }}</span>
+              <span>文章被阅读 &nbsp;{{ article.user.readNum }}</span>
             </div>
           </div>
         </div>
         <div class="direct-pan pan">
           <div class="title">目录</div>
           <ul>
-            <template v-for="item in directs" :key="item">
-              <li
-                :class="{ active: actd == item.key }"
-                @click="scrollView(item.key, false)"
-              >
-                {{ item.key }}
-              </li>
-            </template>
+<!--            <template v-for="item in directs" :key="item">-->
+<!--              <li-->
+<!--                :class="{ active: actd == item.key }"-->
+<!--                @click="scrollView(item.key, false)"-->
+<!--              >-->
+<!--                {{ item.key }}-->
+<!--              </li>-->
+<!--            </template>-->
           </ul>
         </div>
       </div>

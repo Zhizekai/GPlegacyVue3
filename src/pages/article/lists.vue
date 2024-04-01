@@ -8,12 +8,12 @@ const props = defineProps<{
   articles: ArticleType[]
 }>()
 const toDetail = (item: ArticleType) => {
-  window.open('/article/' + item._id)
+  window.open('/article/' + item.id)
 }
 const toDelete = (id: string) => {
   cusConfirm('确认删除文章？删除后不可恢复', () => {
     store.deleteArt(id, () => {
-      let index = props.articles.findIndex(r => r._id == id)
+      let index = props.articles.findIndex(r => r.id == id)
       if (index >= 0) {
         props.articles.splice(index, 1)
       }
@@ -55,7 +55,7 @@ const toDelete = (id: string) => {
             <el-dropdown
               v-if="item.user?._id == ustore.user_info?._id"
               trigger="hover"
-              @command="toDelete(item._id)"
+              @command="toDelete(item.id)"
             >
               <span class="icon-wrap">
                 <el-icon :size="14"><MoreFilled /></el-icon>

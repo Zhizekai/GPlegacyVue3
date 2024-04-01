@@ -9,7 +9,7 @@ router.all('/', (req, res) => {
   res.send('评论API')
 })
 
-// 创建评论 已重构
+// 创建评论 已重构 未对接
 router.post('/create', async (req, res, next) => {
   let body = req.body
   try {
@@ -33,7 +33,7 @@ router.post('/create', async (req, res, next) => {
   }
 })
 
-// 删除评论 已重构
+// 删除评论 已重构 未对接
 router.delete('/remove/:id', async (req, res, next) => {
   let { id } = req.params
   try {
@@ -48,7 +48,7 @@ router.delete('/remove/:id', async (req, res, next) => {
   }
 })
 
-// 获取文章评论列表 已重构
+// 获取文章评论列表 已重构 未对接
 router.get('/list/:source_id', async (req, res, next) => {
   let { source_id } = req.params
   try {
@@ -101,7 +101,7 @@ router.get('/list/:source_id', async (req, res, next) => {
   }
 })
 
-// 获取我的评论列表 已重构
+// 获取我的评论列表 已重构 未对接
 router.get('/mylist', async (req, res, next) => {
   let user_id = req.auth._id
   let { per_page, page } = req.query

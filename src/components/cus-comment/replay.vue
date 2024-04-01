@@ -4,16 +4,16 @@
       <div>
         <span>{{ getTimer(item.created_at) }}</span>
         <span
-          :class="['repbtn', { active: active == item._id }]"
+          :class="['repbtn', { active: active == item.id }]"
           @click="onActive"
-          >{{ active == item._id ? '取消回复' : '回复' }}</span
+          >{{ active == item.id ? '取消回复' : '回复' }}</span
         >
       </div>
       <div class="action">
         <el-dropdown
           v-if="item.created_by?._id == ustore.user_info?._id"
           trigger="click"
-          @command="toDelete(item._id)"
+          @command="toDelete(item.id)"
         >
           <span class="icon-wrap">
             <el-icon :size="12" color="#8a919f"><MoreFilled /></el-icon>
@@ -26,7 +26,7 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="interact fxe" v-if="active == item._id">
+    <div class="interact fxe" v-if="active == item.id">
       <el-input
         v-model="intro"
         type="textarea"
@@ -57,7 +57,7 @@ const store = commentStore()
 const ustore = userStore()
 const props = defineProps<{
   active: string
-  item: CommentRepliyType
+  item: CommentReplyType
 }>()
 const emit = defineEmits<{
   (e: 'onActive', is_act: boolean): void

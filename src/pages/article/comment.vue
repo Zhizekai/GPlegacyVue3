@@ -55,7 +55,7 @@ const toCreate = (data = {}) => {
     return ElMessage.error('评论内容不可为空')
   }
   loading.value = true
-  form_data.created_by = user_info?._id
+  form_data.created_by = user_info?.id
   store.createComment(form_data, res => {
     loading.value = false
     form.value.content = ''
@@ -64,7 +64,8 @@ const toCreate = (data = {}) => {
 }
 const getComments = () => {
   store.getComments(props.art_id, res => {
-    comments.value = res
+    // console.log(res)
+    comments.value = res.rows
   })
 }
 const action_load = computed(() => store.action_load)

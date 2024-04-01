@@ -123,7 +123,7 @@ onMounted(() => {
             <el-input
               v-model="form.content"
               type="textarea"
-              placeholder="快来和掘友一起分享新鲜事！"
+              placeholder="快来和圈友一起分享新鲜事！"
               maxlength="100"
               show-word-limit
               :rows="4"
