@@ -20,11 +20,11 @@
         <el-avatar :size="48" :src="user_info.avatar">
           <img src="@/assets/avatar.png" />
         </el-avatar>
-        <router-link :to="'/user/' + user_info._id">
+        <router-link :to="'/user/' + user_info.id">
           <div class="rcolum">
             <div class="name">{{ user_info.username }}</div>
             <div class="jue fx">
-              掘力值：<span>{{ user_info.jue_power }}</span>
+              掘力值：<span>{{ user_info.juePower }}</span>
             </div>
           </div>
         </router-link>
@@ -32,21 +32,21 @@
       <el-divider />
       <div class="preview fx">
         <div class="item">
-          <b>{{ user_info.follow_num }}</b>
+          <b>{{ user_info.followNum }}</b>
           <div class="label">关注</div>
         </div>
         <div class="item">
-          <b>{{ user_info.good_num }}</b>
+          <b>{{ user_info.goodNum }}</b>
           <div class="label">赞过</div>
         </div>
         <div class="item">
-          <b>{{ user_info.fans_num }}</b>
+          <b>{{ user_info.fansNum }}</b>
           <div class="label">粉丝</div>
         </div>
       </div>
       <el-divider />
       <div class="btn-wrap">
-        <el-button text @click="toRoute('/user/' + user_info._id)"
+        <el-button text @click="toRoute('/user/' + user_info.id)"
           >个人主页</el-button
         >
         <el-button text @click="toRoute('/setting/user')">用户设置</el-button>

@@ -38,7 +38,7 @@ const toLink = (id: string, tar: 1 | 2) => {
 }
 const toFollow = (row: any) => {
   let { fans_id } = row
-  toggleFollow({ user_id: fans_id }, res => {
+  toggleFollow({ userId: fans_id }, res => {
     row.is_follow = !row.is_follow
   })
 }

@@ -136,7 +136,7 @@ const toUser = () => {
 }
 const toFollow = () => {
   let user_id = article.value.createdBy
-  ustore.toggleFollow({ user_id }, res => {
+  ustore.toggleFollow({ userId:user_id }, res => {
     is_follow.value = !is_follow.value
   })
 }

@@ -6,7 +6,7 @@ const userStore = defineStore('user', {
   state: () => ({
     show_tips: false,
     need_login: false,
-    user_info: null as UserType | null,
+    user_info: null as UserType | null
   }),
   actions: {
     showLogin() {
@@ -55,9 +55,9 @@ const userStore = defineStore('user', {
       try {
         let res: any = await request.get('/api/users/info/' + id)
         if (id == 'self') {
-          this.setUserInfo(res)
+          this.setUserInfo(res.data)
         }
-        if (fun) fun(res)
+        if (fun) fun(res.data)
       } catch (error) {
         console.log(error)
       }
@@ -67,6 +67,8 @@ const userStore = defineStore('user', {
       data: Record<string, string>,
       fun?: (data: any) => void
     ) {
+
+      console.log(data)
       try {
         let res: any = await request.post('/api/follows/toggle', data)
         if (fun) fun(res)
@@ -74,15 +76,18 @@ const userStore = defineStore('user', {
         console.log(error)
       }
     },
+
     // 检测是否关注某用户
     async checkFollow(user_id: string, fun?: (data: any) => void) {
       try {
-        let res: any = await request.post('/api/follows/is-follow', { userId:user_id })
-        if (fun) fun(res)
+        let res: any = await request.post('/api/follows/is-follow', { userId: user_id })
+        if (fun)
+          fun(res)
       } catch (error) {
         console.log(error)
       }
     },
+
     // 修改用户信息
     async updateUser(
       id: string,
@@ -91,13 +96,20 @@ const userStore = defineStore('user', {
     ) {
       try {
         let res: any = await request.put('/api/users/update/' + id, data)
-        this.getUser('self')
+
+        // 获取当前用户信息
+        try {
+          let res: any = await request.get('/api/users/info/' + id)
+          this.setUserInfo(res.data)
+        } catch (error) {
+          console.log(error)
+        }
         if (fun) fun(res)
       } catch (error) {
         console.log(error)
       }
-    },
-  },
+    }
+  }
 })
 
 export default userStore

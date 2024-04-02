@@ -107,6 +107,7 @@ import Articles from '@/pages/article/lists.vue'
 import ShortMsgs from '@/pages/short-msg/lists.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 const { user_info, getUser, toggleFollow, checkFollow } = userStore()
 const { getArticles } = articleStore()
 const { getShortMessages } = shortmsgStore()
@@ -123,16 +124,41 @@ const short_msgs = ref({
   data: [],
 })
 const uid = ref(null)
+
+
+onMounted(() => {
+  let { id } = route.params
+  uid.value = id as string
+
+  console.log(uid.value)
+  getUser(uid.value, res => {
+    curuser.value = res
+    getData()
+    if (user_info) {
+      checkFollow(uid.value, res => {
+
+        is_follow.value = res.data
+      })
+    }
+  })
+})
+
+
 const onChange = (e: MouseEvent) => {
   let dom: any = e.target
   tab.value = dom.dataset.val
   getData()
 }
+// 关注和取消关注用户
 const toFollow = () => {
-  toggleFollow({ user_id: uid.value }, res => {
+  toggleFollow({ userId: uid.value }, res => {
+
+    ElMessage.success(res.msg);
     is_follow.value = !is_follow.value
   })
 }
+
+
 const getData = () => {
   if (tab.value == 'article') {
     getArticles({ created_by: uid.value }, res => {
@@ -145,19 +171,7 @@ const getData = () => {
     })
   }
 }
-onMounted(() => {
-  let { id } = route.params
-  uid.value = id as string
-  getUser(uid.value, res => {
-    curuser.value = res
-    getData()
-    if (user_info) {
-      checkFollow(uid.value, res => {
-        is_follow.value = res
-      })
-    }
-  })
-})
+
 </script>
 
 <style lang="less">

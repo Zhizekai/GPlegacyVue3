@@ -1,65 +1,3 @@
-<script setup lang="ts">
-import { userStore } from '@/stores'
-import { compressImg } from '@/utils'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-const store = userStore()
-const route = useRoute()
-const router = useRouter()
-const curtag = ref('')
-const loading = ref(false)
-const form = ref<UserType>()
-const headers = {
-  Authorization: `Bearer ${localStorage.jueblog_token}`,
-}
-const toChange = (tag: string) => {
-  curtag.value = tag
-  router.push({
-    params: { tag },
-  })
-}
-const setAvatar = (url: string) => {
-  ElMessageBox.prompt('输入一个在线的头像地址', '修改头像', {
-    inputValue: url,
-    confirmButtonText: '修改',
-    cancelButtonText: '取消',
-  }).then(({ value }) => {
-    form.value.avatar = value
-  })
-}
-const toUpdate = () => {
-  loading.value = true
-  let { avatar, username, company, position, introduction } = form.value
-  store.updateUser(
-    form.value._id,
-    { avatar, username, company, position, introduction: introduc },
-    res => {
-      loading.value = false
-      ElMessage.success(res.message)
-    }
-  )
-}
-// 上传成功
-const uploadSuccess = (file: any) => {
-  if (file.code == 200) {
-    form.value.avatar = 'https://static.ruidoc.cn' + file.data.path
-    ElMessage.success('上传成功')
-  } else {
-    ElMessage.success('上传失败')
-  }
-}
-
-onMounted(() => {
-  let tag = route.params.tag as string
-  if (!store.user_info) {
-    return (location.href = '/')
-  }
-  form.value = store.user_info
-  curtag.value = tag
-})
-</script>
-
 <template>
   <section class="setting-page fxt">
     <div class="smenu panel">
@@ -128,6 +66,71 @@ onMounted(() => {
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { userStore } from '@/stores'
+import { compressImg } from '@/utils'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+const store = userStore()
+const route = useRoute()
+const router = useRouter()
+const curtag = ref('')
+const loading = ref(false)
+const form = ref<UserType>()
+const headers = {
+  Authorization: `Bearer ${localStorage.jueblog_token}`,
+}
+onMounted(() => {
+  let tag = route.params.tag as string
+  if (!store.user_info) {
+    return (location.href = '/')
+  }
+  form.value = store.user_info
+  curtag.value = tag
+})
+// 修改用户
+const toChange = (tag: string) => {
+  curtag.value = tag
+  router.push({
+    params: { tag },
+  })
+}
+// 设置用户头像
+const setAvatar = (url: string) => {
+  ElMessageBox.prompt('输入一个在线的头像地址', '修改头像', {
+    inputValue: url,
+    confirmButtonText: '修改',
+    cancelButtonText: '取消',
+  }).then(({ value }) => {
+    form.value.avatar = value
+  })
+}
+
+// 修改用户信息
+const toUpdate = () => {
+  loading.value = true
+  let { avatar, username, company, position, introduction } = form.value
+  store.updateUser(
+    form.value.id,
+    { avatar, username, company, position, introduction: introduction },
+    res => {
+      loading.value = false
+      ElMessage.success(res.msg)
+    }
+  )
+}
+// 上传成功
+const uploadSuccess = (file: any) => {
+  if (file.code == 200) {
+    form.value.avatar = 'https://static.ruidoc.cn' + file.data.path
+    ElMessage.success('上传成功')
+  } else {
+    ElMessage.success('上传失败')
+  }
+}
+</script>
 
 <style lang="less">
 .setting-page {
