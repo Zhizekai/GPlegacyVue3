@@ -30,15 +30,6 @@
 - 用户相关的登录验证、加密验证。
 - 全局错误处理，状态码响应。
 
-## 购买纸质书
-
-开发本项目需要的技术基础+实战详细介绍全在这本书里，如有需要请点击购买；欢迎加作者微信咨询。
-
-<div>
-  <a target="_blank" href="https://item.jd.com/14337084.html"><img src="public/book.png" height="400"/></a> &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="public/wechat.jpeg" height="400"/>
-</div>
-
 ## 启动项目
 
 将项目下载到本地，然后按照以下步骤运行。
@@ -63,9 +54,6 @@ $ yarn
 $ yarn run server
 ```
 
-此命令执行后，项目前端与后端会同时启动，并支持修改自动更新。可以用 `pm2 ls` 命令查看启动结果：
-
-<img src="public/pm2.png"/>
 
 如果想查看日志，使用 `pm2 logs <id>` 命令。如：
 
