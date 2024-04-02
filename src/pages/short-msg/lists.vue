@@ -79,7 +79,7 @@ const getComments = (msg_id: string) => {
           </div>
           <div class="action">
             <el-dropdown
-              v-if="item.user?._id == ustore.user_info?._id"
+              v-if="item.user?._id == ustore.user_info?.id"
               trigger="click"
               @command="toDelete(item._id)"
             >

@@ -31,9 +31,9 @@
           <div class='ctx-wrap'>
             <div class='uinfo fx'>
               <span class='u'>{{ item.legacyUser.username }}</span>
-              <span v-if='item.reply_id'>
+              <span v-if='item.replyId'>
                 <span class='content'>&nbsp;回复&nbsp;</span>
-                <span class='u'>{{ whoReply(item.reply_id, comment.replies) }}</span>
+                <span class='u'>{{ whoReply(item.replyId, comment.replies) }}</span>
               </span>
               <span class='content'>：{{ item.content }}</span>
             </div>
