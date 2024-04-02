@@ -3,7 +3,7 @@ interface UserType {
   phone: string
   username: string
   avatar: string
-  introduc: string
+  introduction: string
   company: string
   position: string
   goodNum: number

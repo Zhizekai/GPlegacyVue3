@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { ElMessage } from 'element-plus'
 import request from '@/request'
 
 const commentStore = defineStore('comment', {

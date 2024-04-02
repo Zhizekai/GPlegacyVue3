@@ -54,8 +54,6 @@ const artiStore = defineStore('article', {
     async getCategory() {
       try {
         // let res: any = await request.get('/arts/category')
-
-
         this.categories = mockData.categories
       } catch (error) {
         console.log(error)

@@ -30,10 +30,10 @@ const setAvatar = (url: string) => {
 }
 const toUpdate = () => {
   loading.value = true
-  let { avatar, username, company, position, introduc } = form.value
+  let { avatar, username, company, position, introduction } = form.value
   store.updateUser(
     form.value._id,
-    { avatar, username, company, position, introduc },
+    { avatar, username, company, position, introduction: introduc },
     res => {
       loading.value = false
       ElMessage.success(res.message)
@@ -95,7 +95,7 @@ onMounted(() => {
           <el-input
             type="textarea"
             :rows="4"
-            v-model="form.introduc"
+            v-model="form.introduction"
             placeholder="请输入个人介绍"
           />
         </div>

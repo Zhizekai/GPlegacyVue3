@@ -23,9 +23,7 @@
             <span>用户不存在，请注册</span>
             <a @click="need_register = !need_register">重新登录</a>
           </div>
-          <el-button type="primary" :loading="loading" @click="toLogin">{{
-            need_register ? '注册' : '登录'
-          }}</el-button>
+          <el-button type="primary" :loading="loading" @click="toLogin">{{need_register ? '注册' : '登录'}}</el-button>
         </div>
         <div class="footer">表示同意 <a>用户协议</a> 和 <a>隐私政策</a></div>
       </div>
@@ -65,7 +63,7 @@ const toLogin = () => {
   if (need_register.value) {
     let rform: Partial<UserType> = form.value
     rform.username = '游客' + Math.floor(Math.random() * 99999)
-    rform.introduc = '我是一个萌新'
+    rform.introduction = '我是一个萌新'
     ustore.register(form.value, code => {
       loading.value = false
       if (code == 200) {

@@ -34,7 +34,7 @@ instance.interceptors.response.use(
         localStorage.removeItem('token')
         // window.location.href = '/login'
       } else {
-        ElMessage.error(response.data.message)
+        ElMessage.error("网络请求错误，请检查网络连接")
       }
     } else {
       ElMessage.error(error.message || '服务器错误')

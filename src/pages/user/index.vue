@@ -1,3 +1,105 @@
+
+
+<template>
+  <section class="user-page fx">
+    <div class="content-panel">
+      <div class="basic fx panel" v-if="curuser">
+        <el-avatar :size="90" :src="curuser.avatar">
+          <img src="@/assets/avatar.png" />
+        </el-avatar>
+        <div class="uinfo-wrap">
+          <div class="row-name">
+            <h2>{{ curuser.username }}</h2>
+          </div>
+          <div class="row-intro">
+            <span class="fx">
+              <el-icon :size="18"><UserFilled /></el-icon>
+              <span>
+                {{ curuser.position || '程序员' }} |
+                {{ curuser.company || '某厂' }}
+              </span>
+            </span>
+          </div>
+          <div class="row-intro fx-b">
+            <span class="fxt">
+              <el-icon :size="18"><Ticket /></el-icon>
+              <span class="intro">{{ curuser.introduction }}</span>
+            </span>
+            <router-link
+              to="/setting/user"
+              v-if="user_info?.id == uid"
+              class="edit-btn"
+              >设置</router-link
+            >
+            <el-button
+              v-else
+              @click="toFollow"
+              type="primary"
+              :plain="is_follow"
+              >{{ is_follow ? '已关注' : '关注' }}</el-button
+            >
+          </div>
+        </div>
+      </div>
+      <div class="datainfo panel">
+        <div class="cus-tabs-header">
+          <ul @click="onChange">
+            <li data-val="article" :class="{ active: tab == 'article' }">
+              文章
+            </li>
+            <li data-val="shortmsg" :class="{ active: tab == 'shortmsg' }">
+              沸点
+            </li>
+          </ul>
+        </div>
+        <Articles v-if="tab == 'article'" :articles="articles.data" />
+        <ShortMsgs v-if="tab == 'shortmsg'" :shortmsgs="short_msgs.data" />
+      </div>
+    </div>
+    <div class="other-panel" v-if="curuser">
+      <div class="achieve panel">
+        <h3 class="achi-title">个人成就</h3>
+        <div class="achi-body">
+          <div class="row fx">
+            <span class="icarea">
+              <span class="iconfont icon-zan2 izan" />
+            </span>
+            <span
+              >文章被点赞<span class="n">{{ curuser.goodNum }}</span></span
+            >
+          </div>
+          <div class="row fx">
+            <span class="icarea">
+              <span class="iconfont icon-view2" />
+            </span>
+            <span
+              >文章被阅读<span class="n">{{ curuser.readNum }}</span></span
+            >
+          </div>
+          <div class="row fx">
+            <span class="icarea">
+              <span class="iconfont icon-zan2 izan" />
+            </span>
+            <span
+              >掘力值<span class="n">{{ curuser.juePower }}</span></span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="follow fx panel">
+        <div class="text-wrap">
+          <div>关注了</div>
+          <span>{{ curuser.followNum }}</span>
+        </div>
+        <div class="text-wrap">
+          <div>关注者</div>
+          <span>{{ curuser.fansNum }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { userStore, articleStore, shortmsgStore } from '@/stores'
 import { Ticket, UserFilled } from '@element-plus/icons-vue'
@@ -57,106 +159,6 @@ onMounted(() => {
   })
 })
 </script>
-
-<template>
-  <section class="user-page fx">
-    <div class="content-panel">
-      <div class="basic fx panel" v-if="curuser">
-        <el-avatar :size="90" :src="curuser.avatar">
-          <img src="@/assets/avatar.png" />
-        </el-avatar>
-        <div class="uinfo-wrap">
-          <div class="row-name">
-            <h2>{{ curuser.username }}</h2>
-          </div>
-          <div class="row-intro">
-            <span class="fx">
-              <el-icon :size="18"><UserFilled /></el-icon>
-              <span>
-                {{ curuser.position || '程序员' }} |
-                {{ curuser.company || '某厂' }}
-              </span>
-            </span>
-          </div>
-          <div class="row-intro fx-b">
-            <span class="fxt">
-              <el-icon :size="18"><Ticket /></el-icon>
-              <span class="intro">{{ curuser.introduc }}</span>
-            </span>
-            <router-link
-              to="/setting/user"
-              v-if="user_info?._id == uid"
-              class="edit-btn"
-              >设置</router-link
-            >
-            <el-button
-              v-else
-              @click="toFollow"
-              type="primary"
-              :plain="is_follow"
-              >{{ is_follow ? '已关注' : '关注' }}</el-button
-            >
-          </div>
-        </div>
-      </div>
-      <div class="datainfo panel">
-        <div class="cus-tabs-header">
-          <ul @click="onChange">
-            <li data-val="article" :class="{ active: tab == 'article' }">
-              文章
-            </li>
-            <li data-val="shortmsg" :class="{ active: tab == 'shortmsg' }">
-              沸点
-            </li>
-          </ul>
-        </div>
-        <Articles v-if="tab == 'article'" :articles="articles.data" />
-        <ShortMsgs v-if="tab == 'shortmsg'" :shortmsgs="short_msgs.data" />
-      </div>
-    </div>
-    <div class="other-panel" v-if="curuser">
-      <div class="achieve panel">
-        <h3 class="achi-title">个人成就</h3>
-        <div class="achi-body">
-          <div class="row fx">
-            <span class="icarea">
-              <span class="iconfont icon-zan2 izan" />
-            </span>
-            <span
-              >文章被点赞<span class="n">{{ curuser.good_num }}</span></span
-            >
-          </div>
-          <div class="row fx">
-            <span class="icarea">
-              <span class="iconfont icon-view2" />
-            </span>
-            <span
-              >文章被阅读<span class="n">{{ curuser.read_num }}</span></span
-            >
-          </div>
-          <div class="row fx">
-            <span class="icarea">
-              <span class="iconfont icon-zan2 izan" />
-            </span>
-            <span
-              >掘力值<span class="n">{{ curuser.jue_power }}</span></span
-            >
-          </div>
-        </div>
-      </div>
-      <div class="follow fx panel">
-        <div class="text-wrap">
-          <div>关注了</div>
-          <span>{{ curuser.follow_num }}</span>
-        </div>
-        <div class="text-wrap">
-          <div>关注者</div>
-          <span>{{ curuser.fans_num }}</span>
-        </div>
-      </div>
-    </div>
-  </section>
-</template>
 
 <style lang="less">
 .user-page {

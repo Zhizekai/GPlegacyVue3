@@ -19,15 +19,18 @@ const userStore = defineStore('user', {
       this.user_info = info
       localStorage.setItem('jueblog_user_info', JSON.stringify(info))
     },
+
+    // 用户登录
     async login(form: any, fun: (code: number) => void) {
       try {
-        let res: any = await request.post('/users/login', form)
+        let res: any = await request.post('/api/users/login', form)
         if (res.code == 20001) {
-          ElMessage.error(res.message)
+          ElMessage.error(res.msg)
         }
         if (res.code == 200) {
-          localStorage.setItem('jueblog_token', res.token)
-          this.getUser('self')
+          localStorage.setItem('jueblog_token', res.data.token)
+          // this.getUser('self')
+          this.setUserInfo(res.data)
         }
         fun(res.code)
       } catch (error) {
@@ -35,18 +38,22 @@ const userStore = defineStore('user', {
         console.log(error)
       }
     },
+
+    // 用户注册
     async register(form: Partial<UserType>, fun: (code: number) => void) {
       try {
-        await request.post('/users/create', form)
+        await request.post('/api/users/create', form)
         this.login(form, fun)
       } catch (error) {
         fun(500)
         console.log(error)
       }
     },
+
+    // 获取用户信息
     async getUser(id: string, fun?: (data: any) => void) {
       try {
-        let res: any = await request.get('/users/info/' + id)
+        let res: any = await request.get('/api/users/info/' + id)
         if (id == 'self') {
           this.setUserInfo(res)
         }
@@ -61,7 +68,7 @@ const userStore = defineStore('user', {
       fun?: (data: any) => void
     ) {
       try {
-        let res: any = await request.post('/follows/toggle', data)
+        let res: any = await request.post('/api/follows/toggle', data)
         if (fun) fun(res)
       } catch (error) {
         console.log(error)
@@ -70,7 +77,7 @@ const userStore = defineStore('user', {
     // 检测是否关注某用户
     async checkFollow(user_id: string, fun?: (data: any) => void) {
       try {
-        let res: any = await request.post('/follows/is-follow', { user_id })
+        let res: any = await request.post('/api/follows/is-follow', { userId:user_id })
         if (fun) fun(res)
       } catch (error) {
         console.log(error)
@@ -83,7 +90,7 @@ const userStore = defineStore('user', {
       fun?: (data: any) => void
     ) {
       try {
-        let res: any = await request.put('/users/update/' + id, data)
+        let res: any = await request.put('/api/users/update/' + id, data)
         this.getUser('self')
         if (fun) fun(res)
       } catch (error) {

@@ -44,6 +44,8 @@ const toFollow = (row: any) => {
 }
 const getMessage = () => {
   let { page } = meta.value
+
+  // 获取新的评论消息
   if (type.value == '1') {
     store.getComment(res => {
       loading.value = false
@@ -52,6 +54,8 @@ const getMessage = () => {
       meta.value = res.meta
     }, page)
   }
+
+  // 获取新的点赞消息
   if (type.value == '2') {
     store.getPraises(res => {
       loading.value = false
@@ -60,6 +64,8 @@ const getMessage = () => {
       meta.value = res.meta
     }, page)
   }
+
+  // 获取新的关注消息
   if (type.value == '3') {
     store.getFollows(res => {
       loading.value = false

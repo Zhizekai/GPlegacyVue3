@@ -13,9 +13,9 @@ const mesgStore = defineStore('message', {
   actions: {
     async getMessage() {
       try {
-        let res: any = await request.get('/messages/preview')
+        let res: any = await request.get('/api/messages/preview')
         if (res) {
-          this.msgInfo = res
+          this.msgInfo = res.data
         }
       } catch (error) {
         console.log(error)
@@ -24,7 +24,7 @@ const mesgStore = defineStore('message', {
     async getComment(fun: (res: any) => void, page = 1) {
       try {
         let params = { page }
-        let res = await request.get('/comments/mylist', { params })
+        let res = await request.get('/api/comments/myList', { params })
         fun(res)
       } catch (error) {
         fun(null)
@@ -34,17 +34,19 @@ const mesgStore = defineStore('message', {
     async getPraises(fun: (res: any) => void, page = 1) {
       try {
         let params = { page }
-        let res = await request.get('/praises/mylist', { params })
+        let res = await request.get('/api/praises/myList', { params })
         fun(res)
       } catch (error) {
         fun(null)
         console.log(error)
       }
     },
+
+    // 获取新的关注消息
     async getFollows(fun: (res: any) => void, page = 1) {
       try {
         let params = { page }
-        let res = await request.get('/follows/lists', { params })
+        let res = await request.get('/api/follows/lists', { params })
         fun(res)
       } catch (error) {
         fun(null)
