@@ -42,12 +42,10 @@ const stmsgStore = defineStore('short-msg', {
         console.log(error)
       }
     },
-    // 沸点分组
+    // 获取沸点分组列表
     async getGroups() {
       try {
         // let res: GroupType[] = await request.get('/api/shortMsg/group')
-
-
         this.groups = mockData.groups
         let circle = mockData.groups.find(row => row.key == 'circles')
         this.circles = circle?.children || []
@@ -55,17 +53,19 @@ const stmsgStore = defineStore('short-msg', {
         console.log(error)
       }
     },
-    // 操作点赞
+    // 点赞沸点
     async togglePraise(data: any, fun: (bool: boolean) => void) {
       try {
         data.type = 1
         data.target_type = 2
-        let res: any = await request.post('/praises/toggle', data)
+        let res: any = await request.post('/api/praises/toggle', data)
         fun(res.action == 'create' ? true : false)
       } catch (error) {
         console.log(error)
       }
     },
+
+    // 获取Gp标题
     getGpLabel(key: string) {
       let one = this.circles.find(row => row.key == key)
       return one ? one.label : null

@@ -2,10 +2,10 @@
   <div class='article-detail-page'>
     <div class='handle-box' v-if='article'>
       <div
-        :class="['icon-act fx-c', { active: article && article.is_praise }]"
-        @click='toPraiseOrStart(1)'
+        :class="['icon-act fx-c', { active: article && article.isPraise }]"
+        @click='toPraiseOrCollect(1)'
       >
-        <el-badge :value='article.praises' :hidden='article.praises == 0'>
+        <el-badge :value='article.praiseCount' :hidden='article.praiseCount == 0'>
           <span class='iconfont icon-zan2 izan'></span>
         </el-badge>
       </div>
@@ -15,10 +15,10 @@
         </el-badge>
       </div>
       <div
-        :class="['icon-act fx-c', { active: article && article.is_start }]"
-        @click='toPraiseOrStart(2)'
+        :class="['icon-act fx-c', { active: article && article.isCollect }]"
+        @click='toPraiseOrCollect(2)'
       >
-        <el-badge :value='article.stars' :hidden='article.stars == 0'>
+        <el-badge :value='article.collectionCount' :hidden='article.collectionCount == 0'>
           <span class='iconfont icon-xing'></span>
         </el-badge>
       </div>
@@ -32,11 +32,11 @@
             <!--              article.user.username-->
             <!--            }}</span>-->
             <span className='time'>
-              {{ dayjs(article.created_date).format('YYYY-MM-DD HH:mm') }}
+              {{ dayjs(article.createdDate).format('YYYY-MM-DD HH:mm') }}
             </span>
             <span class='fx'>
               <span class='iconfont icon-liulan'></span>
-              &nbsp;{{ article.page_view }}
+              &nbsp;{{ article.pageView }}
             </span>
             <!--            <a-->
             <!--              className="edit"-->
@@ -126,59 +126,6 @@ const directs = ref([])
 const actd = ref('')
 const is_follow = ref(false)
 
-const toEdit = () => {
-  window.open('/operate/' + article.value.id)
-}
-
-// 跳转到用户信息页面
-const toUser = () => {
-  window.open('/user/' + article.value.user.id)
-}
-const toFollow = () => {
-  let user_id = article.value.createdBy
-  ustore.toggleFollow({ userId:user_id }, res => {
-    is_follow.value = !is_follow.value
-  })
-}
-const toPraiseOrStart = (type: 1 | 2) => {
-  let { id, createdBy } = article.value
-  let form = {
-    target_id: id,
-    target_user: createdBy,
-    type
-  }
-  store.togglePraise(form, bool => {
-    if (type == 1) {
-      article.value.is_praise = bool
-      article.value.praises += bool ? 1 : -1
-    } else {
-      article.value.is_start = bool
-      article.value.stars += bool ? 1 : -1
-    }
-  })
-}
-const scrollView = (name: string, idclass = true) => {
-  name = name.replace(/\./g, '-').replace(/ /g, '')
-  let dom: Element
-  if (idclass) {
-    dom = document.querySelector(`.${name}`)
-  } else {
-    dom = document.getElementById(name)
-  }
-  dom.scrollIntoView({ behavior: 'smooth', block: 'center' })
-}
-
-const onScroll = (e: Event) => {
-  let res = directs.value.find(d => d.top > window.scrollY)
-  if (res) {
-    actd.value = res.key
-  } else {
-    actd.value = directs.value[0]
-      ? directs.value[directs.value.length - 1].key
-      : ''
-  }
-  // console.log('滚动：', res)
-}
 
 onMounted(() => {
   let { id } = route.params
@@ -226,6 +173,64 @@ onMounted(() => {
     window.removeEventListener('scroll', onScroll)
   }
 })
+
+const toEdit = () => {
+  window.open('/operate/' + article.value.id)
+}
+
+// 跳转到用户信息页面
+const toUser = () => {
+  window.open('/user/' + article.value.user.id)
+}
+const toFollow = () => {
+  let user_id = article.value.createdBy
+  ustore.toggleFollow({ userId: user_id }, res => {
+    is_follow.value = !is_follow.value
+  })
+}
+
+// 点赞或者收藏
+const toPraiseOrCollect = (type: 1 | 2) => {
+  let { id, createdBy } = article.value
+  let form = {
+    targetId: id,  // 点赞文章id
+    targetUser: createdBy,  // 点赞的用户
+    type
+  }
+  store.togglePraise(form, bool => {
+    if (type == 1) {
+      article.value.isPraise = bool
+      article.value.praiseCount += bool ? 1 : -1
+    } else {
+      article.value.isCollect = bool
+      article.value.collectionCount += bool ? 1 : -1
+    }
+  })
+}
+const scrollView = (name: string, idclass = true) => {
+  name = name.replace(/\./g, '-').replace(/ /g, '')
+  let dom: Element
+  if (idclass) {
+    dom = document.querySelector(`.${name}`)
+  } else {
+    dom = document.getElementById(name)
+  }
+  dom.scrollIntoView({ behavior: 'smooth', block: 'center' })
+}
+
+const onScroll = (e: Event) => {
+  let res = directs.value.find(d => d.top > window.scrollY)
+  if (res) {
+    actd.value = res.key
+  } else {
+    actd.value = directs.value[0]
+      ? directs.value[directs.value.length - 1].key
+      : ''
+  }
+  // console.log('滚动：', res)
+}
+
+
 </script>
 <style lang='less'>
 .article-detail-page {

@@ -42,11 +42,11 @@ const toDelete = (id: string) => {
           <div class="handle fx">
             <span class="row">
               <span class="iconfont icon-liulan"></span>
-              {{ item.page_view }}
+              {{ item.pageView }}
             </span>
             <span class="row zan">
               <span class="iconfont icon-zan"></span>
-              {{ item.praises || '点赞' }}
+              {{ item.praiseCount || '点赞' }}
             </span>
             <span class="row">
               <span class="iconfont icon-wenda"></span>

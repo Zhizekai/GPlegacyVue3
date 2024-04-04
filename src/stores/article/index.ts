@@ -2,8 +2,7 @@ import { defineStore } from 'pinia'
 import request from '@/request'
 import mockData from '../static.js'
 
-const artiStore = defineStore('article', {
-  state: () => ({
+const artiStore = defineStore('article', { state: () => ({
     loading: false,
     articles: [] as ArticleType[],
     categories: [] as CategoryType[],
@@ -50,6 +49,7 @@ const artiStore = defineStore('article', {
         console.log(error)
       }
     },
+
     // 文章分类
     async getCategory() {
       try {
@@ -59,12 +59,13 @@ const artiStore = defineStore('article', {
         console.log(error)
       }
     },
+
     // 操作点赞/收藏
     async togglePraise(data: any, fun: (bool: boolean) => void) {
       try {
-        data.target_type = 1
+        data.targetType = 1
         let res: any = await request.post('/api/praises/toggle', data)
-        fun(res.action == 'create' ? true : false)
+        fun(res.data.action == 'create')
       } catch (error) {
         console.log(error)
       }
@@ -73,6 +74,7 @@ const artiStore = defineStore('article', {
       let one = this.categories.find(row => row.key == key)
       return one ? one.label : null
     },
+
     // 创建文章
     async createArt(data: Partial<ArticleType>, fun: (data: any) => void) {
       try {
@@ -82,6 +84,7 @@ const artiStore = defineStore('article', {
         console.log(error)
       }
     },
+
     // 修改文章
     async updateArt(id: string, data: Partial<ArticleType>, fun: () => void) {
       try {
