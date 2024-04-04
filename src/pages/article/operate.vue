@@ -1,80 +1,4 @@
-<script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import CusEditor from '@/components/cus-editior/index.vue'
-import { articleStore, userStore } from '@/stores'
-import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { debounce } from '@/utils'
-const ustore = userStore()
-const artstore = articleStore()
-const route = useRoute()
-const router = useRouter()
-const loading = ref(false)
-const popover = ref()
-const form = ref<Partial<ArticleType>>({
-  title: '',
-  content: '',
-  category: 'all',
-  intro: '',
-})
-const mode = ref('create')
-const toPublish = () => {
-  let { title, content, category, intro } = form.value
-  if (!title) {
-    return ElMessage.error('标题不能为空')
-  }
-  if (!content) {
-    return ElMessage.error('文章内容不能为空')
-  }
-  if (!category) {
-    return ElMessage.error('文章分类必选')
-  }
-  if (!intro) {
-    return ElMessage.error('文章摘要必填')
-  }
-  loading.value = true
-  if (form.value.status && form.value.status == 1) {
-    artstore.updateArt(mode.value, form.value, () => {
-      loading.value = false
-      location.href = '/article/' + mode.value
-    })
-  } else {
-    artstore.publishArt(mode.value, () => {
-      loading.value = false
-      location.href = '/article/' + mode.value
-    })
-  }
-}
-const ctxChange = debounce((key: 'title' | 'content') => {
-  if (form.value.status && form.value.status == 1) return
-  if (loading.value) return
-  if (mode.value == 'create' && form.value[key]) {
-    loading.value = true
-    artstore.createArt(form.value, res => {
-      mode.value = res._id
-      router.push({ params: { tag: res._id } })
-      loading.value = false
-    })
-  }
-  if (mode.value != 'create') {
-    loading.value = true
-    artstore.updateArt(mode.value, form.value, () => {
-      loading.value = false
-    })
-  }
-}, 3000)
-onMounted(() => {
-  let tag = route.params.tag as string
-  mode.value = tag
-  artstore.getCategory()
-  if (tag != 'create') {
-    artstore.getArtDetail(tag, data => {
-      // article.value = data
-      form.value = data
-    })
-  }
-})
-</script>
+
 
 <template>
   <div className="article-editor-page">
@@ -117,7 +41,7 @@ onMounted(() => {
             </el-form-item>
             <el-form-item required label="摘要：">
               <el-input
-                v-model="form.intro"
+                v-model="form.introduction"
                 type="textarea"
                 placeholder="请输入内容摘要"
                 maxlength="100"
@@ -155,7 +79,91 @@ onMounted(() => {
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import CusEditor from '@/components/cus-editior/index.vue'
+import { articleStore, userStore } from '@/stores'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { debounce } from '@/utils'
+const ustore = userStore()
+const artstore = articleStore()
+const route = useRoute()
+const router = useRouter()
+const loading = ref(false)
+const popover = ref()
+const form = ref<Partial<ArticleType>>({
+  title: '',
+  content: '',
+  category: 'all',
+  introduction: '',
+})
+const mode = ref('create')
 
+onMounted(() => {
+  let tag = route.params.tag as string
+  mode.value = tag
+  artstore.getCategory()
+  if (tag != 'create') {
+    artstore.getArtDetail(tag, data => {
+      // article.value = data
+      form.value = data
+    })
+  }
+})
+
+// 发布文章
+const toPublish = () => {
+  let { title, content, category, introduction } = form.value
+  if (!title) {
+    return ElMessage.error('标题不能为空')
+  }
+  if (!content) {
+    return ElMessage.error('文章内容不能为空')
+  }
+  if (!category) {
+    return ElMessage.error('文章分类必选')
+  }
+  if (!introduction) {
+    return ElMessage.error('文章摘要必填')
+  }
+  loading.value = true
+  if (form.value.status && form.value.status == 1) {
+    console.log("发布文章")
+    artstore.updateArt(mode.value, form.value, () => {
+      loading.value = false
+      location.href = '/article/' + mode.value
+    })
+  } else {
+    artstore.publishArt(mode.value, () => {
+      loading.value = false
+      location.href = '/article/' + mode.value
+    })
+  }
+}
+
+// 防抖
+const ctxChange = debounce((key: 'title' | 'content') => {
+  console.log("防抖")
+  if (form.value.status && form.value.status == 1) return
+  if (loading.value) return
+  if (mode.value == 'create' && form.value[key]) {
+    loading.value = true
+    artstore.createArt(form.value, res => {
+      mode.value = res._id
+      router.push({ params: { tag: res._id } })
+      loading.value = false
+    })
+  }
+  if (mode.value != 'create') {
+    loading.value = true
+    artstore.updateArt(mode.value, form.value, () => {
+      loading.value = false
+    })
+  }
+}, 3000)
+
+</script>
 <style lang="less">
 .article-editor-page {
   position: fixed;

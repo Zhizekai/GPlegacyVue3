@@ -7,10 +7,12 @@ const mesgStore = defineStore('message', {
       comment: 0,
       praise: 0,
       follow: 0,
-      total: 0,
-    } as MessageType,
+      total: 0
+    } as MessageType
   }),
   actions: {
+
+    // 统计新增信息
     async getMessage() {
       try {
         let res: any = await request.get('/api/messages/preview')
@@ -21,9 +23,11 @@ const mesgStore = defineStore('message', {
         console.log(error)
       }
     },
-    async getComment(fun: (res: any) => void, page = 1) {
+
+    // 获取我的评论列表
+    async getComment(fun: (res: any) => void, pageNum = 1) {
       try {
-        let params = { page }
+        let params = { pageNum, pageSize: 10 }
         let res = await request.get('/api/comments/myList', { params })
         fun(res)
       } catch (error) {
@@ -31,9 +35,11 @@ const mesgStore = defineStore('message', {
         console.log(error)
       }
     },
-    async getPraises(fun: (res: any) => void, page = 1) {
+
+    // 获取我的点赞列表
+    async getPraises(fun: (res: any) => void, pageNum = 1) {
       try {
-        let params = { page }
+        let params = { pageNum, pageSize: 10 }
         let res = await request.get('/api/praises/myList', { params })
         fun(res)
       } catch (error) {
@@ -43,17 +49,17 @@ const mesgStore = defineStore('message', {
     },
 
     // 获取新的关注消息
-    async getFollows(fun: (res: any) => void, page = 1) {
+    async getFollows(fun: (res: any) => void, pageNum = 1) {
       try {
-        let params = { page }
+        let params = { pageNum, pageSize: 10 }
         let res = await request.get('/api/follows/lists', { params })
         fun(res)
       } catch (error) {
         fun(null)
         console.log(error)
       }
-    },
-  },
+    }
+  }
 })
 
 export default mesgStore

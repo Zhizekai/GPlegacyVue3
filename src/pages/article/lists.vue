@@ -38,7 +38,7 @@ const toDelete = (id: string) => {
       <div class="artctx-wrapper">
         <div class="info-wrap">
           <h3>{{ item.title }}</h3>
-          <p>{{ item.intro }}</p>
+          <p>{{ item.introduction }}</p>
           <div class="handle fx">
             <span class="row">
               <span class="iconfont icon-liulan"></span>

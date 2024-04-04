@@ -9,6 +9,8 @@ interface CommentType {
   content: string // 评论内容
   createdBy: string // 创建者
   createdAt: string // 创建时间
+
+  legacyUser?: Partial<UserType>
 }
 
 // 一级评论

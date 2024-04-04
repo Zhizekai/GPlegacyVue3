@@ -2,7 +2,7 @@ interface ArticleType {
   id: string
   title: string // 文章标题
   content: string // 文章内容
-  intro: string // 文章简介
+  introduction: string // 文章简介
   category: string // 文章分类
   comments: number // 文章评论数量
   created_date: string // 创建时间

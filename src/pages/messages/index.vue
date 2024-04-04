@@ -1,8 +1,142 @@
-<script setup lang="ts">
+<template>
+  <div class='message-page'>
+    <div class='banner-box'>
+      <ul class='fx' @click='onChange'>
+        <li data-val='1' :class="['hover', { active: type == '1' }]">
+          评论
+          <el-badge
+            :value='store.msgInfo.comment'
+            :hidden='store.msgInfo.comment == 0'
+          />
+        </li>
+        <li data-val='2' :class="['hover', { active: type == '2' }]">
+          赞和收藏
+          <el-badge
+            :value='store.msgInfo.praise'
+            :hidden='store.msgInfo.praise == 0'
+          />
+        </li>
+        <li data-val='3' :class="['hover', { active: type == '3' }]">
+          新增粉丝
+          <el-badge
+            :value='store.msgInfo.follow'
+            :hidden='store.msgInfo.follow == 0'
+          />
+        </li>
+      </ul>
+    </div>
+    <div class='msgs-box'>
+      <div class='msgs-list' v-if="type == '1'">
+        <div v-for='item in comments' class='msg-item fxt'>
+          <el-avatar :size='45'>
+            <img src='@/assets/avatar.png' />
+          </el-avatar>
+          <div class='msg-infos'>
+            <div class='udesc'>
+              <span class='u' @click='toLink(item.createdBy, 1)'>{{
+                  item?.legacyUser.username
+                }}</span>
+              <span
+              >{{ item.type == 'source' ? '评论了你的' : '回复了你在'
+                }}{{ item?.sourceType == 1 ? '文章' : '沸点' }}</span
+              >
+              <span
+                v-if='item.sourceType == 1'
+                class='source'
+                @click='toLink(item.sourceId, 2)'
+              >
+                {{ item?.article?.title }}
+              </span>
+              <span v-else>沸点</span>
+              <span v-if="item.type != 'source'">下的评论</span>
+            </div>
+            <div class='content'>{{ item.content }}</div>
+            <div class='time'>{{ getTimer(item.createdAt) }}</div>
+          </div>
+        </div>
+        <div class='bgw'>
+          <el-empty
+            v-if='comments.length == 0'
+            :image-size='60'
+            description='暂无评论消息'
+          ></el-empty>
+        </div>
+      </div>
+      <div class='msgs-list' v-if="type == '2'">
+        <div v-for='item in praises' class='msg-item border fxt'>
+          <el-avatar :size='45'>
+            <img src='@/assets/avatar.png' />
+          </el-avatar>
+          <div class='msg-infos'>
+            <div class='udesc'>
+              <span class='u' @click='toLink(item.created_by, 1)'>{{
+                  item.legacyUser.username
+                }}</span>
+              <span
+              >{{ item.type == 1 ? '赞' : '收藏' }}了你的{{
+                  item.targetType == 1 ? '文章' : '沸点'
+                }}</span
+              >
+              <span
+                v-if='item.target_type == 1'
+                class='source'
+                @click='toLink(item.target_id, 2)'
+              >
+                {{ item.article.title }}
+              </span>
+              <span v-else>沸点</span>
+            </div>
+            <div class='time'>{{ getTimer(item.created_at) }}</div>
+          </div>
+        </div>
+        <div class='bgw'>
+          <el-empty
+            v-if='praises.length == 0'
+            :image-size='60'
+            description='暂无点赞或收藏消息'
+          ></el-empty>
+        </div>
+      </div>
+      <div class='msgs-list' v-if="type == '3'">
+        <div v-for='item in follows' class='msg-item border fxt'>
+          <el-avatar :size='45'>
+            <img src='@/assets/avatar.png' />
+          </el-avatar>
+          <div class='msg-infos'>
+            <div class='udesc'>
+              <span class='u' @click='toLink(item.fansId, 1)'>{{
+                  item.legacyUser.username
+                }}</span>
+              <span>关注了你</span>
+            </div>
+            <div class='time'>{{ getTimer(item.created_at) }}</div>
+          </div>
+          <el-button
+            :type="item.is_follow ? 'text' : 'primary'"
+            plain
+            @click='toFollow(item)'
+          >{{ item.is_follow ? '已关注' : '关注' }}
+          </el-button
+          >
+        </div>
+        <div class='bgw'>
+          <el-empty
+            v-if='follows.length == 0'
+            :image-size='60'
+            description='暂无关注消息'
+          ></el-empty>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang='ts'>
 import { messageStore, userStore } from '@/stores'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getTimer, isToBottom, listener } from '@/utils'
+
 const route = useRoute()
 const router = useRouter()
 const store = messageStore()
@@ -10,21 +144,33 @@ const { toggleFollow } = userStore()
 
 const type = ref('1')
 const loading = ref(false)
-const comments = ref([])
-const praises = ref([])
-const follows = ref([])
+const comments = ref<CommentType[]>([])
+const praises = ref<any[]>([])
+const follows = ref<FansType[]>([])
 const meta = ref({
   page: 1,
   per_page: 10,
-  total: 0,
+  total: 0
 })
+
+onMounted(() => {
+  let rtype = route.query.type as string
+  if (!rtype) {
+    type.value = '1'
+  } else {
+    type.value = rtype
+  }
+  getMessage()
+  listener.apply('scroll-end', onScrollEnd)
+})
+
 const onChange = (e: MouseEvent) => {
   let dom: any = e.target
   if (dom.tagName != 'LI') return
   type.value = dom.dataset.val
   if (type.value != '1') {
     router.push({
-      query: { type: type.value },
+      query: { type: type.value }
     })
   } else {
     router.push('/messages')
@@ -50,8 +196,8 @@ const getMessage = () => {
     store.getComment(res => {
       loading.value = false
       if (res == null) return
-      comments.value = page == 1 ? res.data : [...comments.value, ...res.data]
-      meta.value = res.meta
+      comments.value = page == 1 ? res.rows : [...comments.value, ...res.rows]
+      meta.value.total = res.total
     }, page)
   }
 
@@ -60,8 +206,8 @@ const getMessage = () => {
     store.getPraises(res => {
       loading.value = false
       if (res == null) return
-      praises.value = page == 1 ? res.data : [...praises.value, ...res.data]
-      meta.value = res.meta
+      praises.value = page == 1 ? res.rows : [...praises.value, ...res.rows]
+      meta.value.total = res.total
     }, page)
   }
 
@@ -70,8 +216,8 @@ const getMessage = () => {
     store.getFollows(res => {
       loading.value = false
       if (res == null) return
-      follows.value = page == 1 ? res.data : [...follows.value, ...res.data]
-      meta.value = res.meta
+      follows.value = page == 1 ? res.rows : [...follows.value, ...res.rows]
+      meta.value.total = res.total
     }, page)
   }
   store.getMessage()
@@ -87,153 +233,13 @@ const onScrollEnd = () => {
   getMessage()
 }
 
-onMounted(() => {
-  let rtype = route.query.type as string
-  if (!rtype) {
-    type.value = '1'
-  } else {
-    type.value = rtype
-  }
-  getMessage()
-  listener.apply('scroll-end', onScrollEnd)
-})
 </script>
 
-<template>
-  <div class="message-page">
-    <div class="banner-box">
-      <ul class="fx" @click="onChange">
-        <li data-val="1" :class="['hover', { active: type == '1' }]">
-          评论
-          <el-badge
-            :value="store.msgInfo.comment"
-            :hidden="store.msgInfo.comment == 0"
-          />
-        </li>
-        <li data-val="2" :class="['hover', { active: type == '2' }]">
-          赞和收藏
-          <el-badge
-            :value="store.msgInfo.praise"
-            :hidden="store.msgInfo.praise == 0"
-          />
-        </li>
-        <li data-val="3" :class="['hover', { active: type == '3' }]">
-          新增粉丝
-          <el-badge
-            :value="store.msgInfo.follow"
-            :hidden="store.msgInfo.follow == 0"
-          />
-        </li>
-      </ul>
-    </div>
-    <div class="msgs-box">
-      <div class="msgs-list" v-if="type == '1'">
-        <div v-for="item in comments" class="msg-item fxt">
-          <el-avatar :size="45">
-            <img src="@/assets/avatar.png" />
-          </el-avatar>
-          <div class="msg-infos">
-            <div class="udesc">
-              <span class="u" @click="toLink(item.created_by, 1)">{{
-                item.user.username
-              }}</span>
-              <span
-                >{{ item.type == 'source' ? '评论了你的' : '回复了你在'
-                }}{{ item.source_type == 1 ? '文章' : '沸点' }}</span
-              >
-              <span
-                v-if="item.source_type == 1"
-                class="source"
-                @click="toLink(item.source_id, 2)"
-              >
-                {{ item.article.title }}
-              </span>
-              <span v-else>沸点</span>
-              <span v-if="item.type != 'source'">下的评论</span>
-            </div>
-            <div class="content">{{ item.content }}</div>
-            <div class="time">{{ getTimer(item.created_at) }}</div>
-          </div>
-        </div>
-        <div class="bgw">
-          <el-empty
-            v-if="comments.length == 0"
-            :image-size="60"
-            description="暂无评论消息"
-          ></el-empty>
-        </div>
-      </div>
-      <div class="msgs-list" v-if="type == '2'">
-        <div v-for="item in praises" class="msg-item border fxt">
-          <el-avatar :size="45">
-            <img src="@/assets/avatar.png" />
-          </el-avatar>
-          <div class="msg-infos">
-            <div class="udesc">
-              <span class="u" @click="toLink(item.created_by, 1)">{{
-                item.user.username
-              }}</span>
-              <span
-                >{{ item.type == 1 ? '赞' : '收藏' }}了你的{{
-                  item.target_type == 1 ? '文章' : '沸点'
-                }}</span
-              >
-              <span
-                v-if="item.target_type == 1"
-                class="source"
-                @click="toLink(item.target_id, 2)"
-              >
-                {{ item.article.title }}
-              </span>
-              <span v-else>沸点</span>
-            </div>
-            <div class="time">{{ getTimer(item.created_at) }}</div>
-          </div>
-        </div>
-        <div class="bgw">
-          <el-empty
-            v-if="praises.length == 0"
-            :image-size="60"
-            description="暂无点赞或收藏消息"
-          ></el-empty>
-        </div>
-      </div>
-      <div class="msgs-list" v-if="type == '3'">
-        <div v-for="item in follows" class="msg-item border fxt">
-          <el-avatar :size="45">
-            <img src="@/assets/avatar.png" />
-          </el-avatar>
-          <div class="msg-infos">
-            <div class="udesc">
-              <span class="u" @click="toLink(item.fans_id, 1)">{{
-                item.fans_info.username
-              }}</span>
-              <span>关注了你</span>
-            </div>
-            <div class="time">{{ getTimer(item.created_at) }}</div>
-          </div>
-          <el-button
-            :type="item.is_follow ? 'default' : 'primary'"
-            plain
-            @click="toFollow(item)"
-            >{{ item.is_follow ? '已关注' : '关注' }}</el-button
-          >
-        </div>
-        <div class="bgw">
-          <el-empty
-            v-if="follows.length == 0"
-            :image-size="60"
-            description="暂无关注消息"
-          ></el-empty>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
 
-<style lang="less">
+<style lang='less'>
 .message-page {
   margin-top: 46px;
+
   .banner-box {
     height: 46px;
     background: #fff;
@@ -243,48 +249,58 @@ onMounted(() => {
     left: 0;
     right: 0;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
     ul {
       width: 1200px;
       margin: auto;
+
       li {
         line-height: 46px;
         margin-right: 36px;
         font-size: 14px;
+
         .el-badge {
           transform: translateY(2px) scale(0.8);
         }
       }
     }
   }
+
   .msgs-box {
     width: 960px;
     margin: auto;
   }
+
   .msgs-list {
     .msg-item {
       background: #fff;
       margin-bottom: 10px;
       padding: 20px;
       position: relative;
+
       .msg-infos {
         flex: 1;
         margin-left: 22px;
         font-size: 15px;
         color: var(--font-color3);
+
         .udesc {
           margin-bottom: 10px;
+
           .u {
             font-weight: 600;
             color: #000;
             cursor: pointer;
             margin-right: 6px;
           }
+
           .source {
             color: var(--el-color-primary);
             cursor: pointer;
             padding: 0 6px;
           }
         }
+
         .content {
           padding: 10px;
           background: #f2f3f5;
@@ -292,8 +308,10 @@ onMounted(() => {
           margin: 0 20px 10px 0;
         }
       }
+
       &.border {
         margin-bottom: 0;
+
         &::after {
           content: '';
           position: absolute;
@@ -304,8 +322,10 @@ onMounted(() => {
           background: var(--border-color);
         }
       }
+
       .el-button {
         width: 100px;
+
         &--none {
           background: #f2f3f5;
         }

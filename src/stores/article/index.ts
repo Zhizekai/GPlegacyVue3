@@ -76,7 +76,7 @@ const artiStore = defineStore('article', {
     // 创建文章
     async createArt(data: Partial<ArticleType>, fun: (data: any) => void) {
       try {
-        let res: any = await request.post('/arts/create', data)
+        let res: any = await request.post('/api/arts/create', data)
         fun(res)
       } catch (error) {
         console.log(error)
@@ -85,7 +85,7 @@ const artiStore = defineStore('article', {
     // 修改文章
     async updateArt(id: string, data: Partial<ArticleType>, fun: () => void) {
       try {
-        let res: any = await request.put('/arts/update/' + id, data)
+        let res: any = await request.put('/api/arts/update/' + id, data)
         fun()
       } catch (error) {
         console.log(error)
@@ -94,7 +94,7 @@ const artiStore = defineStore('article', {
     // 发布文章
     async publishArt(id: string, fun: () => void) {
       try {
-        await request.post('/arts/publish/' + id)
+        await request.post('/api/arts/publish/' + id)
         fun()
       } catch (error) {
         console.log(error)
@@ -103,7 +103,7 @@ const artiStore = defineStore('article', {
     // 删除文章
     async deleteArt(id: string, fun: () => void) {
       try {
-        await request.delete('/arts/remove/' + id)
+        await request.delete('/api/arts/remove/' + id)
         fun()
       } catch (error) {
         console.log(error)
