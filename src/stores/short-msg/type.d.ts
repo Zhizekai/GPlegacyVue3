@@ -1,15 +1,15 @@
 interface ShortMsgType {
-  _id: string
+  id: string
   group: string
   comments: number
-  images: string[]
+  images: string[]| string
   content: string
   created_at: string
-  created_by: string
-  is_praise: boolean
+  createdBy: string
+  isPraise: boolean
   praises: number
   updated_at: string
-  user: UserInfoType
+  user: Partial<UserType>
 }
 
 interface GroupType {

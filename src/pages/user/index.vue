@@ -53,7 +53,7 @@
           </ul>
         </div>
         <Articles v-if="tab == 'article'" :articles='articles.data' />
-        <ShortMsgs v-if="tab == 'shortmsg'" :shortmsgs='short_msgs.data' />
+        <ShortMsgs v-if="tab == 'shortmsg'" :short-message-list='short_msgs.data' />
       </div>
     </div>
     <div class='other-panel' v-if='curuser'>
@@ -101,6 +101,8 @@
 </template>
 
 <script setup lang='ts'>
+// 用户主页
+
 import { userStore, articleStore, shortmsgStore } from '@/stores'
 import { Ticket, UserFilled } from '@element-plus/icons-vue'
 import Articles from '@/pages/article/lists.vue'
@@ -157,12 +159,12 @@ const toFollow = () => {
 const getData = () => {
   if (tab.value == 'article') {
     getArticles({ created_by: uid.value }, res => {
-      articles.value = res
+      articles.value.data = res.rows
     })
   }
   if (tab.value == 'shortmsg') {
     getShortMessages({ created_by: uid.value }, res => {
-      short_msgs.value = res
+      short_msgs.value.data = res.rows
     })
   }
 }

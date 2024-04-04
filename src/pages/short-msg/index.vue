@@ -1,117 +1,4 @@
-<script setup lang="ts">
-import { messageStore, shortmsgStore, userStore } from '@/stores'
-import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import NavComp from './nav.vue'
-import ShortMsgs from './lists.vue'
-import Other from '../home/other.vue'
-import { ElMessage } from 'element-plus'
-import { listener, compressImg, uploadImg } from '@/utils'
-const store = shortmsgStore()
-const ustore = userStore()
-const router = useRouter()
-const route = useRoute()
-const filter = ref<any>({})
-const loading = ref(false)
-const focus = ref(false)
-const form = ref({
-  content: '',
-  group: 'all',
-  images: [],
-})
 
-// 图片列表
-const fileList = ref([])
-
-const orderby = ref('hot')
-const onFilter = (json: Record<string, string>) => {
-  filter.value = {
-    ...filter.value,
-    ...json,
-  }
-  if (filter.value.page) {
-    delete filter.value.page
-  }
-  router.push({
-    query: filter.value,
-  })
-  store.getShortMessages(filter.value)
-}
-const tagChange = (e: MouseEvent) => {
-  let dom: any = e.target
-  orderby.value = dom.dataset.val
-  onFilter({ orderby: orderby.value })
-}
-const toCreate = async () => {
-  try {
-    loading.value = true
-    if (fileList.value.length > 0) {
-      let files = fileList.value.map(row => row.raw)
-      let resimg: any = await uploadImg(files)
-      if (resimg.code == 200) {
-        form.value.images = resimg.data.map(
-          (row: any) => 'https://static.ruidoc.cn' + row.path
-        )
-      }
-    }
-    store.createMsg(form.value, res => {
-      loading.value = false
-      if (res) {
-        ElMessage.success('发布成功！')
-        form.value = { content: '', group: 'all', images: [] }
-        fileList.value = []
-        store.getShortMessages(filter.value)
-      }
-    })
-  } catch (error) {}
-}
-const onScrollEnd = () => {
-  let { page, per_page, total } = store.meta
-  if (page * per_page >= total) {
-    return false
-  }
-  if (loading.value) return
-  loading.value == true
-  filter.value.page = page + 1
-  store.getShortMessages(filter.value)
-}
-
-// 删除图片
-const removeImg = (file: any) => {
-  console.log(fileList.value, file)
-  let index = fileList.value.findIndex(r => r.uid == file.uid)
-  if (index >= 0) {
-    fileList.value.splice(index, 1)
-  }
-}
-
-const imgbtnClick = () => {
-  let dom: HTMLElement = document.querySelector('.el-upload--picture-card')
-  if (dom) {
-    dom.click()
-  }
-}
-
-// 上传成功
-const uploadSuccess = (file: any) => {
-  if (file.code == 200) {
-    fileList.value.push(file.data.path)
-    ElMessage.success('上传成功')
-  } else {
-    ElMessage.success('上传失败')
-  }
-}
-
-onMounted(() => {
-  filter.value = route.query
-  store.getGroups()
-  store.getShortMessages(filter.value)
-  if (ustore.user_info) {
-    messageStore().getMessage()
-  }
-  listener.apply('scroll-end', onScrollEnd)
-})
-</script>
 
 <template>
   <main class="main-box fxt">
@@ -202,9 +89,9 @@ onMounted(() => {
         </div>
         <ShortMsgs
           v-if="!store.loading"
-          :shortmsgs="store.shortmsgs"
+          :short-message-list="store.shortMessageList"
           @on-filter="onFilter"
-        />
+         />
         <div v-show="store.loading" class="loading-wrap">
           <el-skeleton animated />
         </div>
@@ -213,6 +100,129 @@ onMounted(() => {
     </div>
   </main>
 </template>
+
+<script setup lang="ts">
+import { messageStore, shortmsgStore, userStore } from '@/stores'
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import NavComp from './nav.vue'
+import ShortMsgs from './lists.vue'
+import Other from '../home/other.vue'
+import { ElMessage } from 'element-plus'
+import { listener, compressImg, uploadImg } from '@/utils'
+import * as stream from 'stream'
+const store = shortmsgStore()
+const ustore = userStore()
+const router = useRouter()
+const route = useRoute()
+const filter = ref<any>({})
+const loading = ref(false)
+const focus = ref(false)
+const form = ref({
+  content: '',
+  group: 'all',
+  images: [] ,
+})
+
+// 图片列表
+const fileList = ref([])
+
+const orderby = ref('hot')
+
+
+onMounted(() => {
+  filter.value = route.query
+  store.getGroups()
+  store.getShortMessages(filter.value)
+  if (ustore.user_info) {
+    messageStore().getMessage()
+  }
+  listener.apply('scroll-end', onScrollEnd)
+})
+const onFilter = (json: Record<string, string>) => {
+  filter.value = {
+    ...filter.value,
+    ...json,
+  }
+  if (filter.value.page) {
+    delete filter.value.page
+  }
+  router.push({
+    query: filter.value,
+  })
+  store.getShortMessages(filter.value)
+}
+const tagChange = (e: MouseEvent) => {
+  let dom: any = e.target
+  orderby.value = dom.dataset.val
+  onFilter({ orderby: orderby.value })
+}
+
+// 创建沸点
+const toCreate = async () => {
+  try {
+    loading.value = true
+    if (fileList.value.length > 0) {
+      let files = fileList.value.map(row => row.raw)
+      let resimg: any = await uploadImg(files)
+      if (resimg.code == 200) {
+        form.value.images = resimg.data.map(
+          (row: any) => 'https://static.ruidoc.cn' + row.path
+        )
+
+
+      }
+    }
+    form.value.images = null
+    await store.createMsg(form.value, res => {
+      loading.value = false
+      if (res) {
+        ElMessage.success('发布成功！')
+        form.value = { content: '', group: 'all', images: [] }
+        fileList.value = []
+        store.getShortMessages(filter.value)
+      }
+    })
+  } catch (error) {}
+}
+const onScrollEnd = () => {
+  let { page, per_page, total } = store.meta
+  if (page * per_page >= total) {
+    return false
+  }
+  if (loading.value) return
+  loading.value == true
+  filter.value.page = page + 1
+  store.getShortMessages(filter.value)
+}
+
+// 删除图片
+const removeImg = (file: any) => {
+  console.log(fileList.value, file)
+  let index = fileList.value.findIndex(r => r.uid == file.uid)
+  if (index >= 0) {
+    fileList.value.splice(index, 1)
+  }
+}
+
+const imgbtnClick = () => {
+  let dom: HTMLElement = document.querySelector('.el-upload--picture-card')
+  if (dom) {
+    dom.click()
+  }
+}
+
+// 上传成功
+const uploadSuccess = (file: any) => {
+  if (file.code == 200) {
+    fileList.value.push(file.data.path)
+    ElMessage.success('上传成功')
+  } else {
+    ElMessage.success('上传失败')
+  }
+}
+
+</script>
 
 <style lang="less">
 .main-box {

@@ -84,7 +84,6 @@ const artiStore = defineStore('article', { state: () => ({
         console.log(error)
       }
     },
-
     // 修改文章
     async updateArt(id: string, data: Partial<ArticleType>, fun: () => void) {
       try {

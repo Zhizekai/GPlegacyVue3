@@ -1,87 +1,24 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { shortmsgStore, commentStore, userStore } from '@/stores'
-import { MoreFilled } from '@element-plus/icons-vue'
-import { cusConfirm, getTimer } from '@/utils'
-import { ElMessage } from 'element-plus'
-import Comment from './comment.vue'
-const loading = ref(false)
-const act_id = ref('')
-const store = shortmsgStore()
-const cmstore = commentStore()
-const ustore = userStore()
-const form = ref<Partial<CommentType>>({
-  content: '',
-})
-const comments = ref([])
-const toUser = (id: string) => {
-  window.open('/user/' + id)
-}
-const props = defineProps<{
-  shortmsgs: ShortMsgType[]
-}>()
-const emit = defineEmits<{
-  (e: 'onFilter', json: Record<string, string>): void
-}>()
-const toDelete = (id: string) => {
-  cusConfirm('确认删除沸点？', () => {
-    store.removeMsg(id, () => {
-      ElMessage.success('已删除')
-      let index = props.shortmsgs.findIndex(r => r._id == id)
-      if (index >= 0) {
-        props.shortmsgs.splice(index, 1)
-      }
-      emit('onFilter', {})
-    })
-  })
-}
-const toPraise = (smsg: ShortMsgType) => {
-  let { _id, created_by } = smsg
-  let form = {
-    target_id: _id,
-    target_user: created_by,
-  }
-  store.togglePraise(form, bool => {
-    smsg.is_praise = bool
-    smsg.praises += bool ? 1 : -1
-  })
-}
-const getComments = (msg_id: string) => {
-  if (act_id.value == msg_id) {
-    return (act_id.value = '')
-  }
-  cmstore.getComments(msg_id, res => {
-    act_id.value = msg_id
-    comments.value = res
-  })
-}
-</script>
-
 <template>
   <div class="shortmsg-lists">
-    <div class="msgs-item" v-for="item in props.shortmsgs">
+    <div class="msgs-item" v-for="item in props.shortMessageList">
       <div class="pad-wrap">
         <div class="user-meta fx">
-<!--          <el-avatar :size="48" :src="item.user.avatar">-->
-<!--            <img src="@/assets/avatar.png" />-->
-<!--          </el-avatar> -->
-          <el-avatar :size="48" >
+          <el-avatar :size="48" :src="item.user.avatar">
             <img src="@/assets/avatar.png" />
           </el-avatar>
           <div class="desc-area">
 <!--            <h3 @click="toUser(item.user._id)">{{item.user.username }}</h3>-->
-            <h3 @click="toUser(item.user._id)">{{ "用户名" }}</h3>
+            <h3 @click="toUser(item.user.id)">{{ "用户名" }}</h3>
             <span class="desc fx">
-<!--              {{  item.user.position || '程序员' }} <i />-->
-              {{  '村民' }} <i />
+              {{item?.user?.position || '程序员' }} <i />
               {{ getTimer(item.created_at) }}</span
             >
           </div>
           <div class="action">
             <el-dropdown
-              v-if="item.user?._id == ustore.user_info?.id"
+              v-if="item.user?.id == ustore.user_info?.id"
               trigger="click"
-              @command="toDelete(item._id)"
+              @command="toDelete(item.id)"
             >
               <span class="icon-wrap">
                 <el-icon><MoreFilled /></el-icon>
@@ -110,46 +47,111 @@ const getComments = (msg_id: string) => {
 <!--          </div>-->
         </div>
       </div>
-      <div class="artion-wrap fx">
+      <div class='action-wrap fx'>
         <span class="row fx-c">
           <span class="iconfont icon-liulan"></span>
           <span>分享</span>
         </span>
         <span
-          :class="['row fx-c comn', { active: act_id == item._id }]"
-          @click="getComments(item._id)"
+          :class="['row fx-c comn', { active: act_id == item.id }]"
+          @click="getComments(item.id)"
         >
           <span
             :class="[
               'iconfont',
-              act_id == item._id ? 'icon-wenda2' : 'icon-wenda',
+              act_id == item.id ? 'icon-wenda2' : 'icon-wenda',
             ]"
           ></span>
           <span>{{ item.comments || '评论' }}</span>
         </span>
         <span
-          :class="['row fx-c zan', { active: item.is_praise }]"
+          :class="['row fx-c zan', { active: item.isPraise }]"
           @click="toPraise(item)"
         >
           <span
-            :class="['iconfont', item.is_praise ? 'icon-zan2' : 'icon-zan']"
+            :class="['iconfont', item.isPraise ? 'icon-zan2' : 'icon-zan']"
           ></span>
           <span>{{ item.praises || '点赞' }}</span>
         </span>
       </div>
-      <div v-if="act_id == item._id" class="comment-wrap">
-        <Comment :msg_id="item._id" :user_id="item.user._id" />
+      <div v-if="act_id == item.id" class="comment-wrap">
+        <Comment :msg_id="item.id" :user_id="item.user.id" />
       </div>
     </div>
     <div class="bgw">
       <el-empty
-        v-if="props.shortmsgs.length == 0"
+        v-if="props?.shortMessageList?.length == 0"
         :image-size="60"
         description="暂无内容"
       ></el-empty>
     </div>
   </div>
 </template>
+<script setup lang="ts">
+
+// 沸点列表
+import { onMounted, ref } from 'vue'
+import { shortmsgStore, commentStore, userStore } from '@/stores'
+import { MoreFilled } from '@element-plus/icons-vue'
+import { cusConfirm, getTimer } from '@/utils'
+import { ElMessage } from 'element-plus'
+import Comment from './comment.vue'
+const loading = ref(false)
+const act_id = ref('')
+const store = shortmsgStore()
+const cmstore = commentStore()
+const ustore = userStore()
+const form = ref<Partial<CommentType>>({
+  content: '',
+})
+const comments = ref([])
+const toUser = (id: string) => {
+  window.open('/user/' + id)
+}
+const props = defineProps<{
+  shortMessageList: ShortMsgType[]
+}>()
+
+const emit = defineEmits<{
+  (e: 'onFilter', json: Record<string, string>): void
+}>()
+
+onMounted(() => {
+  console.log(props.shortMessageList)
+})
+const toDelete = (id: string) => {
+  cusConfirm('确认删除沸点？', () => {
+    store.removeMsg(id, () => {
+      ElMessage.success('已删除')
+      let index = props.shortMessageList.findIndex(r => r.id == id)
+      if (index >= 0) {
+        props.shortMessageList.splice(index, 1)
+      }
+      emit('onFilter', {})
+    })
+  })
+}
+const toPraise = (smsg: ShortMsgType) => {
+  let { id, createdBy } = smsg
+  let form = {
+    target_id: id,
+    target_user: createdBy,
+  }
+  store.togglePraise(form, bool => {
+    smsg.isPraise = bool
+    smsg.praises += bool ? 1 : -1
+  })
+}
+const getComments = (msg_id: string) => {
+  if (act_id.value == msg_id) {
+    return (act_id.value = '')
+  }
+  cmstore.getComments(msg_id, res => {
+    act_id.value = msg_id
+    comments.value = res
+  })
+}
+</script>
 
 <style lang="less">
 .shortmsg-lists {
@@ -213,7 +215,7 @@ const getComments = (msg_id: string) => {
         }
       }
     }
-    .artion-wrap {
+    .action-wrap {
       padding: 10px 0 12px 0;
       border-top: 1px solid var(--bg-color2);
       .row {

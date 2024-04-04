@@ -1,27 +1,4 @@
-<script setup lang="ts">
-import { articleStore, userStore } from '@/stores'
-import { cusConfirm, getTimer } from '@/utils'
-import { ElMessage } from 'element-plus'
-const store = articleStore()
-const ustore = userStore()
-const props = defineProps<{
-  articles: ArticleType[]
-}>()
-const toDetail = (item: ArticleType) => {
-  window.open('/article/' + item.id)
-}
-const toDelete = (id: string) => {
-  cusConfirm('确认删除文章？删除后不可恢复', () => {
-    store.deleteArt(id, () => {
-      let index = props.articles.findIndex(r => r.id == id)
-      if (index >= 0) {
-        props.articles.splice(index, 1)
-      }
-      ElMessage.success('已删除')
-    })
-  })
-}
-</script>
+
 
 <template>
   <div class="article-lists">
@@ -53,7 +30,7 @@ const toDelete = (id: string) => {
               {{ item.comments || '评论' }}
             </span>
             <el-dropdown
-              v-if="item.user?._id == ustore.user_info?._id"
+              v-if="item.user?.id == ustore.user_info?.id"
               trigger="hover"
               @command="toDelete(item.id)"
             >
@@ -72,12 +49,41 @@ const toDelete = (id: string) => {
       </div>
     </div>
     <el-empty
-      v-if="props.articles.length == 0"
+      v-if="props?.articles?.length == 0"
       :image-size="100"
       description="暂无内容"
     ></el-empty>
   </div>
 </template>
+
+<script setup lang="ts">
+// 文章列表
+
+import { articleStore, userStore } from '@/stores'
+import { cusConfirm, getTimer } from '@/utils'
+import { ElMessage } from 'element-plus'
+const store = articleStore()
+const ustore = userStore()
+const props = defineProps<{
+  articles: ArticleType[]
+}>()
+
+
+const toDetail = (item: ArticleType) => {
+  window.open('/article/' + item.id)
+}
+const toDelete = (id: string) => {
+  cusConfirm('确认删除文章？删除后不可恢复', () => {
+    store.deleteArt(id, () => {
+      let index = props.articles.findIndex(r => r.id == id)
+      if (index >= 0) {
+        props.articles.splice(index, 1)
+      }
+      ElMessage.success('已删除')
+    })
+  })
+}
+</script>
 
 <style lang="less">
 .article-lists {
