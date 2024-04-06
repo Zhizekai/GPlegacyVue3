@@ -53,14 +53,14 @@
                 <template #reference>
                   <div class="topic fx">
                     {{
-                      form.group == 'all'
+                      form.smGroup == 'all'
                         ? '请选择圈子'
-                        : store.getGpLabel(form.group)
+                        : store.getGpLabel(form.smGroup)
                     }}
                   </div>
                 </template>
                 <div class="groups-pop">
-                  <el-radio-group v-model="form.group">
+                  <el-radio-group v-model="form.smGroup">
                     <el-radio label="all">--不选择圈子--</el-radio>
                     <el-radio v-for="item in store.circles" :label="item.key">{{
                       item.label
@@ -120,7 +120,7 @@ const loading = ref(false)
 const focus = ref(false)
 const form = ref({
   content: '',
-  group: 'all',
+  smGroup: 'all',
   images: [] ,
 })
 
@@ -178,7 +178,7 @@ const toCreate = async () => {
       loading.value = false
       if (res) {
         ElMessage.success('发布成功！')
-        form.value = { content: '', group: 'all', images: [] }
+        form.value = { content: '', smGroup: 'all', images: [] }
         fileList.value = []
         store.getShortMessages(filter.value)
       }

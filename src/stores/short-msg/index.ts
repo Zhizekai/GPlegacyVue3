@@ -21,8 +21,8 @@ const stmsgStore = defineStore('short-msg', {
       fun?: (data: any) => void
     ) {
       try {
-        if (params.group == 'all') {
-          params.group = null
+        if (params.smGroup == 'all') {
+          params.smGroup = null
         }
         let page = +params.page || 1
         if (page == 1) {

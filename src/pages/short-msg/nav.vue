@@ -1,24 +1,3 @@
-<script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-const props = defineProps<{
-  groups: any[]
-}>()
-const emit = defineEmits<{
-  (e: 'onFilter', json: Record<string, string>): void
-}>()
-const route = useRoute()
-const active = ref('all')
-const onClick = (item: any) => {
-  let key = item.children && item.children[0] ? item.children[0].key : item.key
-  active.value = key
-  emit('onFilter', { group: key })
-}
-onMounted(() => {
-  active.value = (route.query['group'] as string) || 'all'
-})
-</script>
-
 <template>
   <div class="main-nav">
     <div v-for="item in props.groups" class="cato-item-wrap">
@@ -44,6 +23,28 @@ onMounted(() => {
   </div>
 </template>
 
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+onMounted(() => {
+  active.value = (route.query['smGroup'] as string) || 'all'
+})
+const props = defineProps<{
+  groups: any[]
+}>()
+const emit = defineEmits<{
+  (e: 'onFilter', json: Record<string, string>): void
+}>()
+const route = useRoute()
+const active = ref('all')
+const onClick = (item: any) => {
+  let key = item.children && item.children[0] ? item.children[0].key : item.key
+  active.value = key
+  emit('onFilter', { smGroup: key })
+}
+
+</script>
 <style lang="less">
 .main-nav {
   background: #fff;

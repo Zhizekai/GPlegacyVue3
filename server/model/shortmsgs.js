@@ -8,7 +8,7 @@ const shortmsgsSchema = new mongoose.Schema({
   images: { type: [String], default: [] },
   created_by: { type: ObjectId, required: true },
   created_at: { type: Date, default: Date.now },
-  group: {
+  smGroup: {
     type: String,
     enum: circles.map(group => group.key).concat(['all']),
     required: true,
