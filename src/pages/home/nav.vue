@@ -1,23 +1,3 @@
-<script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-const props = defineProps<{
-  category: any[]
-}>()
-const emit = defineEmits<{
-  (e: 'onFilter', json: Record<string, string>): void
-}>()
-const route = useRoute()
-const active = ref('all')
-const onClick = (item: any) => {
-  active.value = item.key
-  emit('onFilter', { category: item.key })
-}
-onMounted(() => {
-  active.value = (route.query['category'] as string) || 'all'
-})
-</script>
-
 <template>
   <div class="main-nav">
     <div
@@ -32,6 +12,27 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
+const active = ref('all')
+const props = defineProps<{
+  category: any[]
+}>()
+const emit = defineEmits<{
+  (e: 'onFilter', json: Record<string, string>): void
+}>()
+
+const onClick = (item: any) => {
+  active.value = item.key
+  emit('onFilter', { category: item.key })
+}
+onMounted(() => {
+  active.value = (route.query['category'] as string) || 'all'
+})
+</script>
 
 <style lang="less">
 .main-nav {

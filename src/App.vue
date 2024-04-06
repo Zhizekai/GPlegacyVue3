@@ -5,10 +5,13 @@ import CusLogin from '@/components/cus-login/index.vue'
 import { RouterView } from 'vue-router'
 import { userStore } from '@/stores'
 import { isToBottom, listener } from './utils'
-
+// import dotenv from 'dotenv'
+// dotenv.config()
 const ustore = userStore()
 const L = ref(null)
 const curpath = location.pathname
+
+// 监听登录界面是否显示
 watch(
   () => ustore.need_login,
   val => {

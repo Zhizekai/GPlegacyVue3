@@ -2,6 +2,7 @@
   <div class="header-menu">
     <RouterLink to="/">文章</RouterLink>
     <RouterLink to="/shortmsg">沸点</RouterLink>
+    <RouterLink to="/legacyMap">非遗地图</RouterLink>
   </div>
 </template>
 

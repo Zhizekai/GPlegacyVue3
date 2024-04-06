@@ -1,12 +1,12 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), vueJsx()],
+  // envPrefix:"APP_",//APP_  为自定义开头名这个开头指的是替换VITE开头的前缀，这他妈的不说清楚
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

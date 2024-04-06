@@ -28,3 +28,4 @@ config.json
 *.njsproj
 *.sln
 *.sw?
+.env.*

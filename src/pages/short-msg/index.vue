@@ -1,5 +1,3 @@
-
-
 <template>
   <main class="main-box fxt">
     <NavComp :groups="store.groups" @on-filter="onFilter" />

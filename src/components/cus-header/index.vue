@@ -1,7 +1,7 @@
 <template>
   <div class="cus-header">
     <div class="site-tips fx-c" v-if="ustore.show_tips">
-<!--全局提示框-->
+      <!--全局提示框-->
       <span>本项目是前后台分离的系统，欢迎查阅 👏</span>
       <span class="close-btn fx-c" @click="ustore.setTips(false)">
         <el-icon><Close /></el-icon>

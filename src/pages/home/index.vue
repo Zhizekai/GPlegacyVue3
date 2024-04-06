@@ -48,6 +48,7 @@ onMounted(() => {
 
 <template>
   <main class="main-box fxt">
+<!--    左侧导航栏-->
     <NavComp :category="store.categories" @on-filter="onFilter" />
     <div class="main-ctx fxt">
       <Articles

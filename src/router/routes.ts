@@ -12,6 +12,11 @@ const routes = [
     component: () => import('@/pages/short-msg/index.vue'),
   },
   {
+    path: '/legacyMap',
+    name: 'legacyMap',
+    component: () => import('@/pages/legacyMap/index.vue'),
+  },
+  {
     path: '/messages',
     name: 'messages',
     component: () => import('@/pages/messages/index.vue'),
