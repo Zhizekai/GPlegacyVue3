@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang='ts'>
 import { onMounted, ref, watch } from 'vue'
 import CusHeader from '@/components/cus-header/index.vue'
 import CusLogin from '@/components/cus-login/index.vue'
@@ -40,17 +40,16 @@ onMounted(() => {
   window.addEventListener('scroll', onScroll)
 })
 </script>
-
 <template>
-  <div id="root-layout">
-    <div v-if="!/operate|mobile/.test(curpath)" id="header-layout">
+  <div id='root-layout'>
+    <div v-if='!/operate|mobile/.test(curpath)' id='header-layout'>
       <!-- 头部组件区域 -->
       <CusHeader />
     </div>
-    <div id="main-layout" :class="{ 'show-tips': ustore.show_tips }">
+    <div id='main-layout' :class="{ 'show-tips': ustore.show_tips }">
       <!-- 路由区域 -->
       <RouterView />
-      <CusLogin ref="L" />
+      <CusLogin ref='L' />
     </div>
   </div>
 </template>

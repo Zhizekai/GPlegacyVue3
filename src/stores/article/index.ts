@@ -2,15 +2,16 @@ import { defineStore } from 'pinia'
 import request from '@/request'
 import mockData from '../static.js'
 
-const artiStore = defineStore('article', { state: () => ({
+const artiStore = defineStore('article', {
+  state: () => ({
     loading: false,
     articles: [] as ArticleType[],
     categories: [] as CategoryType[],
     meta: {
       page: 1,
       per_page: 10,
-      total: 0,
-    },
+      total: 0
+    }
   }),
   actions: {
     // 文章列表
@@ -49,7 +50,6 @@ const artiStore = defineStore('article', { state: () => ({
         console.log(error)
       }
     },
-
     // 文章分类
     async getCategory() {
       try {
@@ -59,7 +59,6 @@ const artiStore = defineStore('article', { state: () => ({
         console.log(error)
       }
     },
-
     // 操作点赞/收藏
     async togglePraise(data: any, fun: (bool: boolean) => void) {
       try {
@@ -74,7 +73,6 @@ const artiStore = defineStore('article', { state: () => ({
       let one = this.categories.find(row => row.key == key)
       return one ? one.label : null
     },
-
     // 创建文章
     async createArt(data: Partial<ArticleType>, fun: (data: any) => void) {
       try {
@@ -110,8 +108,7 @@ const artiStore = defineStore('article', { state: () => ({
       } catch (error) {
         console.log(error)
       }
-    },
-  },
+    }
+  }
 })
-
 export default artiStore

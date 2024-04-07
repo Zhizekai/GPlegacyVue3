@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang='ts'>
 import { articleStore, messageStore, userStore } from '@/stores'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -6,6 +6,7 @@ import NavComp from './nav.vue'
 import Articles from './articles.vue'
 import Others from './other.vue'
 import { listener } from '@/utils'
+
 const store = articleStore()
 const ustore = userStore()
 const router = useRouter()
@@ -15,13 +16,13 @@ const loading = ref(false)
 const onFilter = (json: Record<string, string>) => {
   filter.value = {
     ...filter.value,
-    ...json,
+    ...json
   }
   if (filter.value.page) {
     delete filter.value.page
   }
   router.push({
-    query: filter.value,
+    query: filter.value
   })
   store.getArticles(filter.value)
 }
@@ -45,23 +46,21 @@ onMounted(() => {
   listener.apply('scroll-end', onScrollEnd)
 })
 </script>
-
 <template>
-  <main class="main-box fxt">
-<!--    左侧导航栏-->
-    <NavComp :category="store.categories" @on-filter="onFilter" />
-    <div class="main-ctx fxt">
+  <main class='main-box fxt'>
+    <!--    左侧导航栏-->
+    <NavComp :category='store.categories' @on-filter='onFilter' />
+    <div class='main-ctx fxt'>
       <Articles
-        :articles="store.articles"
-        :loading="store.loading"
-        @on-filter="onFilter"
+        :articles='store.articles'
+        :loading='store.loading'
+        @on-filter='onFilter'
       />
       <Others />
     </div>
   </main>
 </template>
-
-<style lang="less">
+<style lang='less'>
 .main-box {
   .main-ctx {
     flex: 1;

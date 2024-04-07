@@ -1,21 +1,21 @@
 <template>
-  <div class="main-nav">
+  <div class='main-nav'>
     <div
       :class="['cato-item fx', { active: active == item.key }]"
-      v-for="item in props.category"
-      @click="onClick(item)"
+      v-for='item in props.category'
+      @click='onClick(item)'
     >
-      <el-icon :size="18">
-        <component :is="item.icon" />
+      <el-icon :size='18'>
+        <component :is='item.icon' />
       </el-icon>
-      <span class="text">{{ item.label }}</span>
+      <span class='text'>{{ item.label }}</span>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
+<script setup lang='ts'>
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const active = ref('all')
 const props = defineProps<{
@@ -33,8 +33,7 @@ onMounted(() => {
   active.value = (route.query['category'] as string) || 'all'
 })
 </script>
-
-<style lang="less">
+<style lang='less'>
 .main-nav {
   background: #fff;
   width: 180px;
@@ -45,6 +44,7 @@ onMounted(() => {
   height: fit-content;
   border-radius: 4px;
   padding: 8px;
+
   .cato-item {
     position: relative;
     padding: 10px 17px;
@@ -53,24 +53,30 @@ onMounted(() => {
     cursor: pointer;
     border-radius: 4px;
     color: var(--font-color2);
+
     .el-icon {
       color: #8a919f;
     }
+
     &:hover {
       background: var(--bg-color1);
       color: var(--el-color-primary);
+
       .el-icon {
         color: var(--el-color-primary);
       }
     }
+
     &.active {
       color: var(--el-color-primary);
       font-weight: 500;
       background: #eaf2ff;
+
       .el-icon {
         color: var(--el-color-primary);
       }
     }
+
     .text {
       padding-left: 17px;
     }
