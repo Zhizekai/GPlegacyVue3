@@ -2,7 +2,8 @@ interface ShortMsgType {
   id: string
   group: string
   comments: number
-  images: string[]| string
+  images: string[] | string
+  imgList: string[]
   content: string
   created_at: string
   createdBy: string

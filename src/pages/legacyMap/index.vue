@@ -60,7 +60,27 @@ const options = ref<any[]>([{
 }, {
   value: '厦门',
   label: '厦门'
-}
+},
+  {
+    value: '四川',
+    label: '四川'
+  },
+  {
+    value: '湖南',
+    label: '湖南'
+  },
+  {
+    value: '郑州',
+    label: '郑州'
+  },
+  {
+    value: '重庆',
+    label: '重庆'
+  },
+  {
+    value: '温州',
+    label: '温州'
+  }
 ])
 const infoWindowRef = ref(null)
 const selectValue = ref<string>('')

@@ -14,7 +14,6 @@ export const getTimer = (stringTime: string) => {
   let time2 = Date.parse(stringTime) //指定时间的时间戳
   // console.log(time2)
   let time = time1 - time2
-
   let result = null
   if (time < 0) {
     alert('设置的时间不能早于当前时间！')
@@ -36,8 +35,7 @@ export const getTimer = (stringTime: string) => {
 // 防抖函数
 export const debounce = (fn: Function, delay = 1600) => {
   // 定时器
-  let timer: number | null = null
-
+  let timer: number | null | any = null
   // 将debounce处理结果当作函数返回
   return (...args: any[]) => {
     // 每次事件被触发时，都去清除之前的旧定时器
@@ -45,12 +43,11 @@ export const debounce = (fn: Function, delay = 1600) => {
       clearTimeout(timer)
     }
     // 设立新定时器
-    timer = setTimeout(function () {
+    timer = setTimeout(function() {
       fn(...args)
     }, delay)
   }
 }
-
 export const cusConfirm = (title: string, fn: Function) => {
   ElMessageBox.confirm(title, '操作提醒', {
     confirmButtonText: '确认',
@@ -58,12 +55,11 @@ export const cusConfirm = (title: string, fn: Function) => {
     type: 'warning',
     customStyle: { padding: '14px 0 20px' },
     showClose: false,
-    center: true,
+    center: true
   }).then(() => {
     fn()
   })
 }
-
 export const isToBottom = (fn: () => void) => {
   let position = window.pageYOffset || document.documentElement.scrollTop
   let docHeight = Math.max(
@@ -77,9 +73,7 @@ export const isToBottom = (fn: () => void) => {
     fn()
   }
 }
-
 export const listener = new Listener()
-
 export const compressImg = (file: File) => {
   let maxsize = 300
   let typeList = ['image/jpeg', 'image/png', 'image/gif']
@@ -103,18 +97,22 @@ export const compressImg = (file: File) => {
     })
   })
 }
-
+// 上传图片
 export const uploadImg = async (files: any[]) => {
   if (files.length == 0) {
     return null
   }
-  let form_data = new FormData()
+  let imgList: any[] = []
   for (let i = 0; i < files.length; i++) {
-    let res: any = await compressImg(files[i])
-    form_data.append('images', res, res.name)
+    // let res: any = await compressImg(files[i])  // 压缩图片
+    let form_data = new FormData()
+    form_data.append('file', files[i], files[i].name)
+    await request.post('/api/shortMsg/upload', form_data).then((uploadRes) => {
+      imgList[i] = uploadRes.data.url
+    }).catch((error) => {
+      console.log(error)
+    })
   }
-  // console.log(form_data)
-  return request.post('/others/uploads', form_data, {
-    baseURL: 'https://api.ruidoc.cn',
-  })
+  console.log(imgList)
+  return { code: 200, data: imgList }
 }
