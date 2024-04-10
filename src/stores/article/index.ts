@@ -74,7 +74,7 @@ const artiStore = defineStore('article', {
       return one ? one.label : null
     },
     // 创建文章
-    async createArt(data: Partial<ArticleType>, fun: (data: any) => void) {
+    async createArt(data: Partial<ArticleType>, fun: (data: ArticleType) => void) {
       try {
         let res: any = await request.post('/api/arts/create', data)
         fun(res)

@@ -99,10 +99,8 @@
     </div>
   </section>
 </template>
-
 <script setup lang='ts'>
 // 用户主页
-
 import { userStore, articleStore, shortmsgStore } from '@/stores'
 import { Ticket, UserFilled } from '@element-plus/icons-vue'
 import Articles from '@/pages/article/lists.vue'
@@ -140,13 +138,11 @@ onMounted(() => {
     }
   })
 })
-
 const onChange = (e: MouseEvent) => {
   let dom: any = e.target
   tab.value = dom.dataset.val
   getData()
 }
-
 // 关注和取消关注用户
 const toFollow = () => {
   toggleFollow({ userId: uid.value }, res => {
@@ -154,11 +150,10 @@ const toFollow = () => {
     is_follow.value = !is_follow.value
   })
 }
-
 // 获取数据
 const getData = () => {
   if (tab.value == 'article') {
-    getArticles({ created_by: uid.value }, res => {
+    getArticles({ author: uid.value }, res => {
       articles.value.data = res.rows
     })
   }
@@ -168,7 +163,6 @@ const getData = () => {
     })
   }
 }
-
 </script>
 <style lang='less'>
 .user-page {

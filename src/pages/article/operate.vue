@@ -1,91 +1,93 @@
-
-
 <template>
-  <div className="article-editor-page">
-    <div className="top-bar fx-b">
+  <div className='article-editor-page'>
+    <div className='top-bar fx-b'>
       <input
-        className="title"
-        v-model="form.title"
+        className='title'
+        v-model='form.title'
         @input="ctxChange('title')"
-        placeholder="请输入文章标题"
+        placeholder='请输入文章标题'
       />
-      <div className="right-box fx">
-        <span class="tip">文章将自动保存至草稿箱</span>
-        <el-button class="actmo">草稿箱</el-button>
+      <div className='right-box fx'>
+        <span class='tip'>文章将自动保存至草稿箱</span>
+        <el-button class='actmo'>草稿箱</el-button>
         <el-popover
-          placement="bottom-end"
-          :width="500"
-          trigger="click"
-          transition="none"
-          :hide-after="50"
-          ref="popover"
-          popper-class="art-publish-popover"
+          placement='bottom-end'
+          :width='500'
+          trigger='click'
+          transition='none'
+          :hide-after='50'
+          ref='popover'
+          popper-class='art-publish-popover'
         >
           <template #reference>
-            <el-button class="actmo" type="primary">
+            <el-button class='actmo' type='primary'>
               {{ mode == 'create' ? '发布' : '修改' }}
             </el-button>
           </template>
-          <div class="p-title">
+          <div class='p-title'>
             {{ mode == 'create' ? '发布' : '修改' }}文章
           </div>
-          <el-form label-width="85px">
-            <el-form-item required label="分类：">
+          <el-form label-width='85px'>
+            <el-form-item required label='分类：'>
               <div
                 :class="['cate-item', { active: item.key == form.category }]"
-                v-for="item in artstore.categories"
-                @click="form.category = item.key"
+                v-for='item in artstore.categories'
+                @click='form.category = item.key'
               >
                 {{ item.label }}
               </div>
             </el-form-item>
-            <el-form-item required label="摘要：">
+            <el-form-item required label='摘要：'>
               <el-input
-                v-model="form.introduction"
-                type="textarea"
-                placeholder="请输入内容摘要"
-                maxlength="100"
+                v-model='form.introduction'
+                type='textarea'
+                placeholder='请输入内容摘要'
+                maxlength='100'
                 show-word-limit
-                :rows="3"
+                :rows='3'
               />
             </el-form-item>
           </el-form>
-          <div class="p-footer">
-            <el-button class="actmo" @click="popover.hide()">取消</el-button>
+          <div class='p-footer'>
+            <el-button class='actmo' @click='popover.hide()'>取消</el-button>
             <el-button
-              class="actmo"
-              :loading="loading"
-              type="primary"
-              @click="toPublish"
+              class='actmo'
+              :loading='loading'
+              type='primary'
+              @click='toPublish'
             >
               {{ mode == 'create' ? '确认发布' : '确认修改' }}
             </el-button>
           </div>
         </el-popover>
-        <div class="user-wrap">
-          <el-tooltip effect="dark" content="返回用户中心">
-            <el-avatar :size="32">
-              <img src="@/assets/avatar.png" />
+        <div class='user-wrap'>
+          <el-tooltip effect='dark' content='返回用户中心'>
+            <el-avatar :size='32'>
+              <img src='@/assets/avatar.png' />
             </el-avatar>
           </el-tooltip>
         </div>
       </div>
     </div>
-    <div className="main">
+    <div className='main'>
       <CusEditor
-        v-model="form.content"
+        v-model='form.content'
         @update:modelValue="ctxChange('content')"
       />
     </div>
   </div>
 </template>
-<script setup lang="ts">
+<script setup lang='ts'>
+/**
+ * 编辑文章页面
+ */
 import { onMounted, ref } from 'vue'
 import CusEditor from '@/components/cus-editior/index.vue'
 import { articleStore, userStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { debounce } from '@/utils'
+
 const ustore = userStore()
 const artstore = articleStore()
 const route = useRoute()
@@ -96,10 +98,9 @@ const form = ref<Partial<ArticleType>>({
   title: '',
   content: '',
   category: 'all',
-  introduction: '',
+  introduction: ''
 })
 const mode = ref('create')
-
 onMounted(() => {
   let tag = route.params.tag as string
   mode.value = tag
@@ -111,7 +112,6 @@ onMounted(() => {
     })
   }
 })
-
 // 发布文章
 const toPublish = () => {
   let { title, content, category, introduction } = form.value
@@ -129,7 +129,6 @@ const toPublish = () => {
   }
   loading.value = true
   if (form.value.status && form.value.status == 1) {
-    console.log("发布文章")
     artstore.updateArt(mode.value, form.value, () => {
       loading.value = false
       location.href = '/article/' + mode.value
@@ -141,17 +140,17 @@ const toPublish = () => {
     })
   }
 }
-
 // 防抖
 const ctxChange = debounce((key: 'title' | 'content') => {
-  console.log("防抖")
+  console.log('防抖')
+  console.log(mode.value)
   if (form.value.status && form.value.status == 1) return
   if (loading.value) return
   if (mode.value == 'create' && form.value[key]) {
     loading.value = true
     artstore.createArt(form.value, res => {
-      mode.value = res._id
-      router.push({ params: { tag: res._id } })
+      mode.value = res.id
+      router.push({ params: { tag: res.id } })
       loading.value = false
     })
   }
@@ -162,32 +161,36 @@ const ctxChange = debounce((key: 'title' | 'content') => {
     })
   }
 }, 3000)
-
 </script>
-<style lang="less">
+<style lang='less'>
 .article-editor-page {
   position: fixed;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
+
   .top-bar {
     background: #fff;
     padding: 0 27px;
+
     .right-box {
       margin-right: 20px;
+
       .tip {
         color: var(--font-color3);
         font-size: 14px;
         opacity: 0.6;
         margin-right: 16px;
       }
+
       .user-wrap {
         margin-left: 20px;
         cursor: pointer;
       }
     }
   }
+
   .title {
     height: 60px;
     margin-left: 10px;
@@ -197,24 +200,30 @@ const ctxChange = debounce((key: 'title' | 'content') => {
     border: none;
     outline: none;
     width: 50%;
+
     &:focus {
       box-shadow: none !important;
     }
   }
+
   .main {
     background: #fff;
+
     .bytemd {
       height: calc(100vh - 60px);
     }
   }
+
   .bytemd-editor {
     .CodeMirror {
       background: #fafbfc;
     }
   }
 }
+
 .art-publish-popover {
   padding: 0px !important;
+
   .p-title {
     font-size: 17px;
     padding: 16px 20px;
@@ -222,8 +231,10 @@ const ctxChange = debounce((key: 'title' | 'content') => {
     color: var(--font-color1);
     border-bottom: 1px solid #eee;
   }
+
   .el-form {
     padding: 20px 20px 0 0;
+
     .cate-item {
       width: 88px;
       height: 28px;
@@ -232,15 +243,18 @@ const ctxChange = debounce((key: 'title' | 'content') => {
       cursor: pointer;
       background: var(--bg-color1);
       margin: 0 8px 10px 0;
+
       &.active {
         color: var(--el-color-primary);
         background: var(--bg-color2);
       }
     }
+
     textarea {
       border-radius: 2px;
     }
   }
+
   .p-footer {
     padding: 16px 20px;
     text-align: right;

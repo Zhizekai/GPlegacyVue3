@@ -28,9 +28,9 @@
         <div class='content' v-if='article'>
           <h1 className='art-title'>{{ article.title }}</h1>
           <div className='options fx'>
-            <!--            <span className="uname hover" @click="toUser">{{-->
-            <!--              article.user.username-->
-            <!--            }}</span>-->
+                        <span className='uname hover' @click='toUser'>{{
+                                article.user.username
+                          }}</span>
             <span className='time'>
               {{ dayjs(article.createdDate).format('YYYY-MM-DD HH:mm') }}
             </span>
@@ -38,12 +38,12 @@
               <span class='iconfont icon-liulan'></span>
               &nbsp;{{ article.pageView }}
             </span>
-            <!--            <a-->
-            <!--              className="edit"-->
-            <!--              v-if="ustore.user_info?.id == article.user.id"-->
-            <!--              @click="toEdit"-->
-            <!--              >编辑</a-->
-            <!--            >-->
+            <a
+              className='edit'
+              v-if='ustore.user_info?.id == article.user.id'
+              @click='toEdit'
+            >编辑</a
+            >
           </div>
           <MkRender :content='article.content' />
         </div>
@@ -73,7 +73,7 @@
             v-if='article.createdBy != ustore.user_info?.id'
           >
             <el-button type='primary' @click='toFollow' plain>{{
-                is_follow ? '已关注' : '关注'
+                    is_follow ? '已关注' : '关注'
               }}
             </el-button>
           </div>
@@ -95,14 +95,14 @@
         <div class='direct-pan pan'>
           <div class='title'>目录</div>
           <ul>
-            <!--            <template v-for="item in directs" :key="item">-->
-            <!--              <li-->
-            <!--                :class="{ active: actd == item.key }"-->
-            <!--                @click="scrollView(item.key, false)"-->
-            <!--              >-->
-            <!--                {{ item.key }}-->
-            <!--              </li>-->
-            <!--            </template>-->
+            <!--                        <template v-for="item in directs" :key="item">-->
+            <!--                          <li-->
+            <!--                            :class="{ active: actd == item.key }"-->
+            <!--                            @click="scrollView(item.key, false)"-->
+            <!--                          >-->
+            <!--                            {{ item.key }}-->
+            <!--                          </li>-->
+            <!--                        </template>-->
           </ul>
         </div>
       </div>
@@ -125,12 +125,9 @@ const article = ref<ArticleType | null>(null)
 const directs = ref([])
 const actd = ref('')
 const is_follow = ref(false)
-
-
 onMounted(() => {
   let { id } = route.params
   store.getArtDetail(id as string, data => {
-
     article.value = data
     let dirs = data.content.match(/#{1,}.*/g) || []
     let index = 0
@@ -173,14 +170,14 @@ onMounted(() => {
     window.removeEventListener('scroll', onScroll)
   }
 })
-
 const toEdit = () => {
-  window.open('/operate/' + article.value.id)
+  // window.open('/operate/' + article.value.id)  // 跳转到新页面打开
+  location.href = '/operate/' + article.value.id  // 在当前页面打开
 }
-
 // 跳转到用户信息页面
 const toUser = () => {
-  window.open('/user/' + article.value.user.id)
+  // window.open('/user/' + article.value.user.id)  // 跳转到新页面打开
+  location.href = '/user/' + article.value.user.id  // 在当前页面打开
 }
 const toFollow = () => {
   let user_id = article.value.createdBy
@@ -188,7 +185,6 @@ const toFollow = () => {
     is_follow.value = !is_follow.value
   })
 }
-
 // 点赞或者收藏
 const toPraiseOrCollect = (type: 1 | 2) => {
   let { id, createdBy } = article.value
@@ -217,7 +213,6 @@ const scrollView = (name: string, idclass = true) => {
   }
   dom.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
-
 const onScroll = (e: Event) => {
   let res = directs.value.find(d => d.top > window.scrollY)
   if (res) {
@@ -229,8 +224,6 @@ const onScroll = (e: Event) => {
   }
   // console.log('滚动：', res)
 }
-
-
 </script>
 <style lang='less'>
 .article-detail-page {
